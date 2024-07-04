@@ -31,6 +31,7 @@ function Register() {
           className="my-2 py-[14px] px-[16px] border border-[#dddfe2] text-[#050505] w-[330px] h-[40px] rounded-[5px] focus:outline-none"
           placeholder="Confirm Password"
         />
+        <span className="text-[15px] font-normal">Image</span>
         <input type="file" className="my-2" />
         <button
           type="submit"
@@ -39,7 +40,7 @@ function Register() {
           Register
         </button>
         <Link
-          href={`/register`}
+          href={`/login`}
           className="flex items-center justify-center my-2 text-white font-bold bg-[#42b72a] w-[330px] h-[40px] rounded-[5px] focus:outline-none"
         >
           Back to Login
