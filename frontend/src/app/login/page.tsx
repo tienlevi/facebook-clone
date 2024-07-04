@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-import { FaFacebook } from "react-icons/fa";
 
 function Login() {
   return (
@@ -15,14 +14,17 @@ function Login() {
         <input
           type="text"
           className="my-2 py-[14px] px-[16px] border border-[#dddfe2] text-[#050505] w-[330px] h-[40px] rounded-[5px] focus:outline-none"
-          placeholder="Username"
+          placeholder="Email"
         />
         <input
           type="password"
           className="my-2 py-[14px] px-[16px] border border-[#dddfe2] text-[#050505] w-[330px] h-[40px] rounded-[5px] focus:outline-none"
           placeholder="Password"
         />
-        <button className="my-2 px-[16px] text-white font-bold bg-[#0866ff] w-[330px] h-[40px] rounded-[5px] focus:outline-none">
+        <button
+          type="submit"
+          className="my-2 px-[16px] text-white font-bold bg-[#0866ff] w-[330px] h-[40px] rounded-[5px] focus:outline-none"
+        >
           Login
         </button>
         <Link
