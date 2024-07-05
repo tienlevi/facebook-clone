@@ -1,9 +1,11 @@
 import Link from "next/link";
-import React from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
   return (
     <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
+      <ToastContainer />
       <form
         action=""
         className="flex flex-col bg-white shadow-[0_2px_4px_rgba(0,0,0,.1)] py-[10px] px-[15px] rounded-[10px]"

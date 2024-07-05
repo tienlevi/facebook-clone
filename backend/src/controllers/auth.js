@@ -5,10 +5,20 @@ import UserSchema from "../model/user.js";
 const validate = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().email().required(),
+  tel: Joi.string().required(),
   password: Joi.string().min(6).required(),
   confirmPassword: Joi.string().min(6).valid(Joi.ref("password")),
   avatar: Joi.string(),
 });
+
+export const getUser = async (req, res) => {
+  try {
+    const data = await UserSchema.find(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const Register = async (req, res) => {
   try {
