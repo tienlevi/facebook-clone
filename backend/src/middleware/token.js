@@ -9,12 +9,12 @@ function Token(req, res, next) {
   if (!token) {
     return res.status(401).json({ message: "Error" });
   }
-  jwt.verify(token, process.env.JWT_ACCESS_TOKEN, (err, user) => {
+  jwt.verify(token, process.env.JWT_ACCESS_TOKEN, (err, body) => {
     console.log(err);
     if (err) return res.sendStatus(403);
-    return res.status(200).json(user);
+    req.body = body;
+    next();
   });
-  next();
 }
 
 export default Token;

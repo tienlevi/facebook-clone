@@ -21,9 +21,8 @@ const SignInValidate = Joi.object({
 });
 
 export const AccessToken = async (req, res) => {
-  const { email } = req.body;
   try {
-    const user = await UserSchema.findOne({ email });
+    const user = await UserSchema.findOne({ _id: req.body._id });
     if (!user) {
       return res.status(403).json({ error: "User not found" });
     }

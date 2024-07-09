@@ -4,7 +4,7 @@ import Token from "../middleware/token.js";
 
 const router = Router();
 
-router.get("/auth", AccessToken, Token);
+router.get("/auth", Token, AccessToken);
 router.post("/register", Register);
 router.post("/login", Login, Token);
 
