@@ -1,3 +1,4 @@
+import useAuth from "@/hooks/useAuth";
 import { FaUserFriends } from "react-icons/fa";
 import { PiTelevisionSimpleBold } from "react-icons/pi";
 
@@ -6,6 +7,8 @@ interface Props {
 }
 
 export function Sidebar() {
+  const { user } = useAuth();
+
   return (
     <div className="max-md:hidden sticky top-[60px] flex flex-col w-1/4 h-screen">
       <div className="border-b border-gray-300">
@@ -17,7 +20,7 @@ export function Sidebar() {
             height={35}
             className="rounded-full"
           />
-          <p className="text-[19px] font-medium ml-3">Tiến Nguyễn</p>
+          <p className="text-[19px] font-medium ml-3">{user.name}</p>
         </div>
         <div className="my-3 flex items-center">
           <FaUserFriends style={{ fontSize: 35 }} />

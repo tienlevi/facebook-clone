@@ -1,7 +1,6 @@
 "use client";
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import Contact from "@/components/Contact/Contact";
 import Header from "@/components/Header/Header";
 import PostInput from "@/components/Posts/PostInput";
@@ -12,29 +11,6 @@ import "react-toastify/dist/ReactToastify.css";
 import useAuth from "@/hooks/useAuth";
 
 export default function Home() {
-  const { user } = useAuth();
-  const router = useRouter();
-  // useLayoutEffect(() => {
-  //   if (user === null) {
-  //     router.push("/login");
-  //   }
-  // }, []);
-  // console.log(user);
-  useEffect(() => {
-    const accessToken = localStorage?.getItem("AccessToken");
-    const getData = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/api/auth", {
-          headers: { Authorization: `Bearer ${accessToken}` },
-          withCredentials: true,
-        });
-        console.log(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getData();
-  }, []);
   return (
     <>
       <Header />

@@ -28,7 +28,7 @@ function Login() {
         data
       );
       setUser(data);
-      router.push("/");
+      router.push("/", { scroll: false });
       toast.success("Login success");
       localStorage.setItem("AccessToken", response.data?.token);
       return response.data;
