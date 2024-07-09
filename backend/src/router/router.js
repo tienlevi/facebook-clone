@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { getUser, Login, Register } from "../controllers/auth.js";
+import { AccessToken, Login, Register } from "../controllers/auth.js";
+import Token from "../middleware/token.js";
 
 const router = Router();
 
-router.get("/auth", getUser);
+router.get("/auth", AccessToken, Token);
 router.post("/register", Register);
-router.post("/login", Login);
+router.post("/login", Login, Token);
 
 export default router;

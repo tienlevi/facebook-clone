@@ -1,6 +1,10 @@
 import Joi from "joi";
 import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 import UserSchema from "../model/user.js";
+
+dotenv.config();
 
 const SignUpValidate = Joi.object({
   name: Joi.string().required(),
@@ -16,12 +20,17 @@ const SignInValidate = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
-export const getUser = async (req, res) => {
+export const AccessToken = async (req, res) => {
+  const { email } = req.body;
   try {
-    const data = await UserSchema.find(req.body);
-    return res.status(200).json(data);
+    const user = await UserSchema.findOne({ email });
+    if (!user) {
+      return res.status(403).json({ error: "User not found" });
+    }
+    return res.status(200).json({ user });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(401).json({ error: "Unauthorized" });
   }
 };
 
@@ -64,7 +73,10 @@ export const Login = async (req, res) => {
     if (!isMatch) {
       return res.status(402).json({ message: "password incorrect" });
     }
-    return res.status(200).json({ message: "Login success", user });
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_ACCESS_TOKEN, {
+      expiresIn: "1h",
+    });
+    return res.status(200).json({ message: "Login success", user, token });
   } catch (error) {
     console.log(error);
   }

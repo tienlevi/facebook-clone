@@ -30,7 +30,7 @@ function Login() {
       setUser(data);
       router.push("/");
       toast.success("Login success");
-      localStorage.setItem("AccessToken", response.data?.user);
+      localStorage.setItem("AccessToken", response.data?.token);
       return response.data;
     } catch (error: any) {
       if (error?.response.status === 401) {
