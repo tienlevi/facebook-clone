@@ -1,9 +1,11 @@
 "use client";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import useAuth from "@/hooks/useAuth";
 
 interface Inputs {
   email: string;
@@ -11,6 +13,8 @@ interface Inputs {
 }
 
 function Login() {
+  const { setUser } = useAuth();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -19,9 +23,15 @@ function Login() {
   } = useForm<Inputs>();
   const onSubmit = async (data: any) => {
     try {
-      const respose = await axios.post("http://localhost:8080/api/login", data);
+      const response = await axios.post(
+        "http://localhost:8080/api/login",
+        data
+      );
+      setUser(data);
+      router.push("/");
       toast.success("Login success");
-      return respose.data;
+      localStorage.setItem("AccessToken", response.data?.user);
+      return response.data;
     } catch (error: any) {
       if (error?.response.status === 401) {
         setError("email", { message: "Email already exist" });

@@ -1,4 +1,6 @@
 "use client";
+import { useLayoutEffect } from "react";
+import { useRouter } from "next/navigation";
 import Contact from "@/components/Contact/Contact";
 import Header from "@/components/Header/Header";
 import PostInput from "@/components/Posts/PostInput";
@@ -6,9 +8,18 @@ import Posts from "@/components/Posts/Posts";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Image from "next/image";
+import useAuth from "@/hooks/useAuth";
 
 export default function Home() {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  useLayoutEffect(() => {
+    if (user === null) {
+      router.push("/login");
+    }
+  }, []);
+  console.log(user);
   return (
     <>
       <Header />
