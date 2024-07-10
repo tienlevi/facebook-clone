@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-function Token(req, res, next) {
+function AuthenticateToken(req, res, next) {
   const headers = req.headers["authorization"];
   const token = headers && headers.split(" ")[1];
   if (!token) {
@@ -17,4 +17,4 @@ function Token(req, res, next) {
   });
 }
 
-export default Token;
+export default AuthenticateToken;
