@@ -30,7 +30,8 @@ function Login() {
       setUser(data);
       router.push("/", { scroll: false });
       toast.success("Login success");
-      localStorage.setItem("AccessToken", response.data?.token);
+      localStorage.setItem("AccessToken", response.data?.accessToken);
+      localStorage.setItem("RefreshToken", response.data?.refreshToken);
       return response.data;
     } catch (error: any) {
       if (error?.response.status === 401) {
@@ -43,7 +44,6 @@ function Login() {
   };
   return (
     <>
-      {" "}
       <ToastContainer />
       <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
         <form

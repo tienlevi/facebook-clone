@@ -59,10 +59,23 @@ export const Login = async (req, res) => {
     if (!isMatch) {
       return res.status(402).json({ message: "password incorrect" });
     }
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_ACCESS_TOKEN, {
-      expiresIn: "1h",
+    const accessToken = jwt.sign(
+      { _id: user._id },
+      process.env.JWT_ACCESS_TOKEN,
+      {
+        expiresIn: "1h",
+      }
+    );
+    const refreshToken = jwt.sign(
+      { _id: user._id },
+      process.env.JWT_REFRESH_TOKEN
+    );
+    return res.status(200).json({
+      message: "Login success",
+      user,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
     });
-    return res.status(200).json({ message: "Login success", user, token });
   } catch (error) {
     console.log(error);
   }
