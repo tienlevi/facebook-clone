@@ -1,12 +1,12 @@
 import { useState, useEffect, useLayoutEffect } from "react";
 import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { User } from "@/interface";
 import useToken from "./useToken";
 
 function useAuth() {
   const [user, setUser] = useState({} as User);
-  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const axiosJWT = axios.create();
   const refreshToken = useToken();
@@ -15,7 +15,7 @@ function useAuth() {
     const accessToken = localStorage?.getItem("AccessToken");
     const getData = async () => {
       try {
-        const { data } = await axios.get("http://localhost:8080/api/auth", {
+        const { data } = await axiosJWT.get("http://localhost:8080/api/auth", {
           headers: { Authorization: `Bearer ${accessToken}` },
           withCredentials: true,
         });
@@ -32,12 +32,14 @@ function useAuth() {
     const accessToken = localStorage.getItem("AccessToken");
     const requestJWT = axiosJWT.interceptors.request.use(
       async (config) => {
-        // const decodedToken: any = jwtDecode(accessToken as string);
-        // const currentDate = new Date();
-        // const newAccessToken = await refreshToken();
-        // if ((decodedToken.exp as number) * 1000 < currentDate.getTime()) {
-        config.headers["Authorization"] = `Bearer ${accessToken}`;
-        // }
+        const decodedToken: any = jwtDecode(accessToken as string);
+        const currentDate = new Date();
+        console.log(decodedToken);
+
+        const newAccessToken = await refreshToken();
+        if ((decodedToken.exp as number) * 1000 < currentDate.getTime()) {
+          config.headers["Authorization"] = `Bearer ${newAccessToken}`;
+        }
         return config;
       },
       (error) => {
@@ -62,9 +64,9 @@ function useAuth() {
       axiosJWT.interceptors.request.eject(requestJWT);
       axiosJWT.interceptors.response.eject(responseJWT);
     };
-  }, [user]);
+  }, [user, axiosJWT, refreshToken]);
 
-  return { user, setUser, loading };
+  return { user, setUser };
 }
 
 export default useAuth;
