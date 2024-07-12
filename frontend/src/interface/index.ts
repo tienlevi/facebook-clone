@@ -13,7 +13,7 @@ export interface Post {
   userId: string;
   userInfo: {
     name: string;
-    image: string;
+    avatar: string;
   };
   title: string;
   image: string;

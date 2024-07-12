@@ -3,6 +3,7 @@ import { FaImages } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import useAuth from "@/hooks/useAuth";
 import UploadCloundinary from "@/utils/upload";
+import previewFile from "@/utils/preview";
 
 interface Props {
   onPost: (data: any) => void;
@@ -12,6 +13,7 @@ function PostInput({ onPost }: Props) {
   const { user } = useAuth();
   const [open, setOpen] = useState<boolean>(false);
   const imageRef = useRef<HTMLInputElement>(null);
+  const preview = useRef<HTMLDivElement>(null);
   const { register, handleSubmit } = useForm();
 
   const onSubmit = async (data: any) => {
@@ -34,9 +36,9 @@ function PostInput({ onPost }: Props) {
         <img
           src={user.avatar}
           alt=""
-          width={35}
-          height={35}
-          className="rounded-full"
+          width={40}
+          height={40}
+          className="rounded-full w-[40px] h-[40px] object-cover"
         />
         <input
           {...register("title", { required: true })}
@@ -47,6 +49,9 @@ function PostInput({ onPost }: Props) {
       </div>
       {open && (
         <div className="my-5">
+          {/* <div ref={preview}>
+            {previewFile(imageRef.current?.files?.[0]) as any}
+          </div> */}
           <input type="file" ref={imageRef} />
         </div>
       )}

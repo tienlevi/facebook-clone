@@ -18,11 +18,11 @@ function Posts({ posts, editPost, deletePost }: Props) {
           <div className="flex">
             <div className="block">
               <img
-                src={item.userInfo?.image}
+                src={item.userInfo?.avatar}
                 alt=""
-                width={35}
-                height={35}
-                className="rounded-full"
+                width={40}
+                height={40}
+                className="rounded-full w-[40px] h-[40px] object-cover"
               />
             </div>
             <div className="flex flex-col ml-2">
