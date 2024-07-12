@@ -34,8 +34,6 @@ function useAuth() {
       async (config) => {
         const decodedToken: any = jwtDecode(accessToken as string);
         const currentDate = new Date();
-        console.log(decodedToken);
-
         const newAccessToken = await refreshToken();
         if ((decodedToken.exp as number) * 1000 < currentDate.getTime()) {
           config.headers["Authorization"] = `Bearer ${newAccessToken}`;

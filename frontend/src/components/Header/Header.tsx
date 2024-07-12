@@ -3,8 +3,11 @@ import { FaFacebook, FaMoon } from "react-icons/fa";
 import { IoSearchSharp, IoMenu } from "react-icons/io5";
 import { TbLogout } from "react-icons/tb";
 import { SidebarMobile } from "../Sidebar/Sidebar";
+import useAuth from "@/hooks/useAuth";
+import Image from "next/image";
 
 function Header() {
+  const { user } = useAuth();
   const [value, setValue] = useState<string>("");
   const [toggleProfile, setToggleProfile] = useState<boolean>(false);
   const [toggleMenu, setToggleMenu] = useState<boolean>(false);
@@ -49,11 +52,11 @@ function Header() {
             onClick={() => setToggleProfile(!toggleProfile)}
           >
             <img
-              src="https://scontent.fhan15-2.fna.fbcdn.net/v/t39.30808-1/339750921_3361707387400982_1307641247829571121_n.jpg?stp=c0.6.40.40a_cp0_dst-jpg_p40x40&_nc_cat=104&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeGNOMcjsDuES8GouTKzJ5WJoK9xBZgVWRigr3EFmBVZGKULh5tPz0R_QGytvkJOIhLEACF62RwbN5nszpxn7iFk&_nc_ohc=me6tnVt2aTsQ7kNvgEiMz6Q&_nc_ht=scontent.fhan15-2.fna&oh=00_AYBIFALzC1TEuw9K9iUSyyT5Hf2u-9Vqg3wWi70yAuz9AA&oe=668A7F3F"
-              alt="image"
+              src={user.avatar}
+              alt=""
               width={40}
               height={40}
-              className="rounded-full"
+              className="w-[40px] h-[40px] object-cover rounded-full"
             />
           </div>
         </div>
@@ -64,13 +67,13 @@ function Header() {
         >
           <div className="flex items-center p-2 bg-white cursor-pointer shadow-[0_2px_12px_0_rgba(0,0,0,0.2)] rounded-[8px] hover:bg-[rgba(0,0,0,0.05)]">
             <img
-              src="https://scontent.fhan15-2.fna.fbcdn.net/v/t39.30808-1/339750921_3361707387400982_1307641247829571121_n.jpg?stp=c0.6.40.40a_cp0_dst-jpg_p40x40&_nc_cat=104&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeGNOMcjsDuES8GouTKzJ5WJoK9xBZgVWRigr3EFmBVZGKULh5tPz0R_QGytvkJOIhLEACF62RwbN5nszpxn7iFk&_nc_ohc=me6tnVt2aTsQ7kNvgEiMz6Q&_nc_ht=scontent.fhan15-2.fna&oh=00_AYBIFALzC1TEuw9K9iUSyyT5Hf2u-9Vqg3wWi70yAuz9AA&oe=668A7F3F"
-              alt="image"
+              src={user.avatar}
+              alt=""
               width={40}
               height={40}
-              className="rounded-full"
+              className="w-[40px] h-[40px] object-cover rounded-full"
             />
-            <p className="text-[17px] font-medium ml-2">Tiến Nguyễn</p>
+            <p className="text-[17px] font-medium ml-2">{user.name}</p>
           </div>
           <div className="flex items-center px-2 py-4 my-2 hover:bg-[rgba(0,0,0,0.05)] rounded-[8px] cursor-pointer">
             <FaMoon
