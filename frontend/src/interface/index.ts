@@ -7,3 +7,16 @@ export interface User {
   createAt: string;
   updateAt: string;
 }
+
+export interface Post {
+  _id?: string;
+  userId: string;
+  userInfo: {
+    name: string;
+    image: string;
+  };
+  title: string;
+  image: string;
+  createdAt: string;
+  updatedAt: string;
+}
