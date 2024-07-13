@@ -3,8 +3,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import useAuth from "@/hooks/useAuth";
 
 interface Inputs {
@@ -44,7 +43,6 @@ function Login() {
   };
   return (
     <>
-      <ToastContainer />
       <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
         <form
           onSubmit={handleSubmit(onSubmit)}

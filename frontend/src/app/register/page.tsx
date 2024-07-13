@@ -1,9 +1,8 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import Link from "next/link";
 import axios from "axios";
-import "react-toastify/dist/ReactToastify.css";
 
 interface Inputs {
   name: string;
@@ -38,7 +37,6 @@ function Register() {
   };
   return (
     <>
-      <ToastContainer />
       <div className="absolute mt-[100px] left-1/2 translate-x-[-50%]">
         <form
           className="flex flex-col bg-white shadow-[0_2px_4px_rgba(0,0,0,.1)] py-[10px] px-[15px] rounded-[10px]"

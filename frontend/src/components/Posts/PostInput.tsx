@@ -3,6 +3,7 @@ import { FaImages } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import useAuth from "@/hooks/useAuth";
 import UploadCloundinary from "@/utils/upload";
+import usePreview from "@/hooks/usePreview";
 
 interface Props {
   onPost: (data: any) => void;
@@ -13,6 +14,7 @@ function PostInput({ onPost }: Props) {
   const [open, setOpen] = useState<boolean>(false);
   const imageRef = useRef<HTMLInputElement>(null);
   const { register, handleSubmit } = useForm();
+  const handleChange = usePreview();
 
   const onSubmit = async (data: any) => {
     const imageCloudinary = await UploadCloundinary(
@@ -45,7 +47,11 @@ function PostInput({ onPost }: Props) {
           placeholder="What's on your mind ?"
         />
       </div>
-      {open && <div className="my-5"></div>}
+      {open && (
+        <div className="my-5">
+          <input type="file" onChange={handleChange} />
+        </div>
+      )}
       <div className="flex justify-between">
         <div
           onClick={() => setOpen(!open)}
