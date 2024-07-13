@@ -37,7 +37,7 @@ export default function Home() {
       <Header />
       <ToastContainer />
       <div className="relative max-w-screen-2xl mx-auto mt-[70px] px-2 max-xl:max-w-screen-xl max-lg:max-w-screen-lg max-md:max-w-screen-md">
-        <div className="inline-flex">
+        <div className="flex">
           <Sidebar />
           <div className="w-1/2 mx-2">
             <PostInput onPost={handlePost} />

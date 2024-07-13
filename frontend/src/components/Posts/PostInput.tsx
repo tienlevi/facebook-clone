@@ -3,7 +3,6 @@ import { FaImages } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import useAuth from "@/hooks/useAuth";
 import UploadCloundinary from "@/utils/upload";
-import previewFile from "@/utils/preview";
 
 interface Props {
   onPost: (data: any) => void;
@@ -13,7 +12,6 @@ function PostInput({ onPost }: Props) {
   const { user } = useAuth();
   const [open, setOpen] = useState<boolean>(false);
   const imageRef = useRef<HTMLInputElement>(null);
-  const preview = useRef<HTMLDivElement>(null);
   const { register, handleSubmit } = useForm();
 
   const onSubmit = async (data: any) => {
@@ -47,14 +45,7 @@ function PostInput({ onPost }: Props) {
           placeholder="What's on your mind ?"
         />
       </div>
-      {open && (
-        <div className="my-5">
-          {/* <div ref={preview}>
-            {previewFile(imageRef.current?.files?.[0]) as any}
-          </div> */}
-          <input type="file" ref={imageRef} />
-        </div>
-      )}
+      {open && <div className="my-5"></div>}
       <div className="flex justify-between">
         <div
           onClick={() => setOpen(!open)}

@@ -1,5 +1,4 @@
 import { Post } from "@/interface";
-import { formatDistance } from "date-fns";
 
 interface Props {
   posts: Post[];
@@ -28,13 +27,7 @@ function Posts({ posts, editPost, deletePost }: Props) {
             <div className="flex flex-col ml-2">
               <p className="text-[15px] font-semibold">{item.userInfo?.name}</p>
               <p className="text-[14px] text-[rgb(101,103,107)]">
-                {formatDistance(
-                  new Date(item.createdAt),
-                  new Date().toLocaleDateString(),
-                  {
-                    addSuffix: true,
-                  }
-                )}
+                {new Date(item.createdAt).toLocaleString()}
               </p>
             </div>
           </div>
