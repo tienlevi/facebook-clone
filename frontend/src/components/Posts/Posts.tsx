@@ -33,7 +33,7 @@ function Posts({ posts, editPost, deletePost }: Props) {
           </div>
           <div className="text-[17px] my-2">{item.title}</div>
           <div className="w-full">
-            <img src={item.image} alt="" className="w-full object-cover" />
+            <img src={item.fileSrc} alt="" className="w-full object-cover" />
           </div>
         </div>
       ))}

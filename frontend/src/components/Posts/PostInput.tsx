@@ -12,19 +12,17 @@ interface Props {
 function PostInput({ onPost }: Props) {
   const { user } = useAuth();
   const [open, setOpen] = useState<boolean>(false);
-  const imageRef = useRef<HTMLInputElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
   const { register, handleSubmit } = useForm();
   const handleChange = usePreview();
 
   const onSubmit = async (data: any) => {
-    const imageCloudinary = await UploadCloundinary(
-      imageRef.current?.files?.[0]
-    );
+    const fileCloudinary = await UploadCloundinary(fileRef.current?.files?.[0]);
     onPost({
       ...data,
       userId: user._id,
       userInfo: { name: user.name, avatar: user.avatar },
-      image: imageCloudinary,
+      fileSrc: fileCloudinary,
     });
   };
   return (

@@ -11,7 +11,7 @@ const Post = new mongoose.Schema(
       avatar: { type: String },
     },
     title: { type: String, require: true },
-    image: { type: String },
+    fileSrc: { type: String },
   },
   { timestamps: true, versionKey: false }
 );
