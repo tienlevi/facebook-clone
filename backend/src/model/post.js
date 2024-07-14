@@ -12,6 +12,7 @@ const Post = new mongoose.Schema(
     },
     title: { type: String, require: true },
     fileSrc: { type: String },
+    fileType: { type: String },
   },
   { timestamps: true, versionKey: false }
 );

@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import useAuth from "@/hooks/useAuth";
 import UploadCloundinary from "@/utils/upload";
 import usePreview from "@/hooks/usePreview";
+import { toast } from "react-toastify";
 
 interface Props {
   onPost: (data: any) => void;
@@ -14,15 +15,17 @@ function PostInput({ onPost }: Props) {
   const [open, setOpen] = useState<boolean>(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const { register, handleSubmit } = useForm();
-  const handleChange = usePreview();
+  const { file, fileType, handleChangeFile } = usePreview();
 
   const onSubmit = async (data: any) => {
     const fileCloudinary = await UploadCloundinary(fileRef.current?.files?.[0]);
+    toast.success("Post success");
     onPost({
       ...data,
       userId: user._id,
       userInfo: { name: user.name, avatar: user.avatar },
       fileSrc: fileCloudinary,
+      fileType: fileType,
     });
   };
   return (
@@ -47,7 +50,13 @@ function PostInput({ onPost }: Props) {
       </div>
       {open && (
         <div className="my-5">
-          <input type="file" onChange={handleChange} />
+          {fileType === "image" && <img src={file} alt="" />}
+          {fileType === "video" && (
+            <video controls className="w-full">
+              <source src={file} type="video/mp4" className="object-cover" />
+            </video>
+          )}
+          <input type="file" ref={fileRef} onChange={handleChangeFile} />
         </div>
       )}
       <div className="flex justify-between">

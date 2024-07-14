@@ -17,6 +17,7 @@ export interface Post {
   };
   title: string;
   fileSrc: string;
+  fileType: string;
   createdAt: string;
   updatedAt: string;
 }

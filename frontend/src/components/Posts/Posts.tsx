@@ -33,7 +33,18 @@ function Posts({ posts, editPost, deletePost }: Props) {
           </div>
           <div className="text-[17px] my-2">{item.title}</div>
           <div className="w-full">
-            <img src={item.fileSrc} alt="" className="w-full object-cover" />
+            {item.fileType === "image" && (
+              <img src={item.fileSrc} alt="" className="w-full object-cover" />
+            )}
+            {item.fileType === "video" && (
+              <video controls className="w-full">
+                <source
+                  src={item.fileSrc}
+                  type="video/mp4"
+                  className="object-cover"
+                />
+              </video>
+            )}
           </div>
         </div>
       ))}
