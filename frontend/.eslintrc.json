@@ -1,5 +1,5 @@
 {
-  "extends": ["next/core-web-vitals", "jsx-a11y/alt-text"],
+  "extends": ["next/core-web-vitals"],
   "rules": {
     "jsx-a11y/alt-text": [
       2,
