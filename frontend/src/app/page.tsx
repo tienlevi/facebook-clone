@@ -5,7 +5,8 @@ import Header from "@/components/Header/Header";
 import PostInput from "@/components/Posts/PostInput";
 import Posts from "@/components/Posts/Posts";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
-import { addPost, getPosts } from "@/services/post";
+import { addPost, deletePost, getPosts } from "@/services/post";
+import { toast } from "react-toastify";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
@@ -30,6 +31,14 @@ export default function Home() {
     [posts]
   );
 
+  const handleDelete = async (id: string) => {
+    if (confirm("Are you sure want to delete ?")) {
+      await deletePost(id);
+      setPosts(posts.filter((item: any) => item._id !== id));
+      toast.success("Delete success");
+    }
+  };
+
   return (
     <>
       <Header />
@@ -38,7 +47,7 @@ export default function Home() {
           <Sidebar />
           <div className="w-1/2 mx-2">
             <PostInput onPost={handlePost} />
-            <Posts posts={posts} />
+            <Posts posts={posts} deletePost={handleDelete} />
           </div>
           <Contact />
         </div>

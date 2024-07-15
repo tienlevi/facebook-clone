@@ -17,3 +17,12 @@ export const getPosts = async () => {
     console.log(error);
   }
 };
+
+export const deletePost = async (id: string) => {
+  try {
+    const response = await baseUrl.delete(`/posts/${id}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

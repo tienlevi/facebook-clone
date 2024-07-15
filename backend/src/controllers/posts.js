@@ -17,3 +17,12 @@ export const addPost = async (req, res) => {
     console.log(error);
   }
 };
+
+export const deletePost = async (req, res) => {
+  try {
+    const data = await PostSchema.findByIdAndDelete({ _id: req.params.id });
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
