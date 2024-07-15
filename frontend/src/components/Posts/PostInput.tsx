@@ -12,22 +12,33 @@ interface Props {
 
 function PostInput({ onPost }: Props) {
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const { register, handleSubmit } = useForm();
   const { file, fileType, handleChangeFile } = usePreview();
 
   const onSubmit = async (data: any) => {
-    const fileCloudinary = await UploadCloundinary(fileRef.current?.files?.[0]);
-    toast.success("Post success");
-    onPost({
-      ...data,
-      userId: user._id,
-      userInfo: { name: user.name, avatar: user.avatar },
-      fileSrc: fileCloudinary,
-      fileType: fileType,
-    });
+    try {
+      setIsLoading(true);
+      const fileCloudinary = await UploadCloundinary(
+        fileRef.current?.files?.[0]
+      );
+      toast.success("Post success");
+      onPost({
+        ...data,
+        userId: user._id,
+        userInfo: { name: user.name, avatar: user.avatar },
+        fileSrc: fileCloudinary,
+        fileType: fileType,
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -69,12 +80,18 @@ function PostInput({ onPost }: Props) {
             Photo / Video
           </p>
         </div>
-        <button
-          type="submit"
-          className="bg-blue-500 w-[100px] text-white py-2 flex items-center justify-center mt-4 rounded-[10px] cursor-pointer"
-        >
-          Post
-        </button>
+        {isLoading ? (
+          <p className="bg-blue-500 w-[100px] text-white py-2 flex items-center justify-center mt-4 rounded-[10px] cursor-pointer">
+            Loading...
+          </p>
+        ) : (
+          <button
+            type="submit"
+            className="bg-blue-500 w-[100px] text-white py-2 flex items-center justify-center mt-4 rounded-[10px] cursor-pointer"
+          >
+            Post
+          </button>
+        )}
       </div>
     </form>
   );
