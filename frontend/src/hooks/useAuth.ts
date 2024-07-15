@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { User } from "@/interface";
 import useToken from "./useToken";
+import { baseServer } from "@/constant";
 
 function useAuth() {
   const [user, setUser] = useState({} as User);
@@ -15,7 +16,7 @@ function useAuth() {
     const accessToken = localStorage?.getItem("AccessToken");
     const getData = async () => {
       try {
-        const { data } = await axiosJWT.get("http://localhost:8080/api/auth", {
+        const { data } = await axiosJWT.get(`${baseServer}/api/auth`, {
           headers: { Authorization: `Bearer ${accessToken}` },
           withCredentials: true,
         });

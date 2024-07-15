@@ -10,7 +10,7 @@ Connect();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000", "facebooks-clonee.vercel.app"],
     methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
     credentials: true,
   })

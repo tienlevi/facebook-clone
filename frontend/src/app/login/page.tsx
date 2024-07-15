@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import useAuth from "@/hooks/useAuth";
+import { baseServer } from "@/constant";
 
 interface Inputs {
   email: string;
@@ -22,10 +23,7 @@ function Login() {
   } = useForm<Inputs>();
   const onSubmit = async (data: any) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/login",
-        data
-      );
+      const response = await axios.post(`${baseServer}/api/login`, data);
       setUser(data);
       router.push("/", { scroll: false });
       toast.success("Login success");

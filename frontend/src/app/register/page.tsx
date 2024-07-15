@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import axios from "axios";
+import { baseServer } from "@/constant";
 
 interface Inputs {
   name: string;
@@ -23,10 +24,7 @@ function Register() {
 
   const onSubmit = async (data: any) => {
     try {
-      const respose = await axios.post(
-        "http://localhost:8080/api/register",
-        data
-      );
+      const respose = await axios.post(`${baseServer}/api/register`, data);
       toast.success("Register success");
       return respose.data;
     } catch (error: any) {
