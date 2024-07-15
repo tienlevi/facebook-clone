@@ -1,16 +1,25 @@
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FaFacebook, FaMoon } from "react-icons/fa";
 import { IoSearchSharp, IoMenu } from "react-icons/io5";
 import { TbLogout } from "react-icons/tb";
 import { SidebarMobile } from "../Sidebar/Sidebar";
 import useAuth from "@/hooks/useAuth";
-import Image from "next/image";
 
 function Header() {
-  const { user } = useAuth();
+  const router = useRouter();
+  const { user, setUser } = useAuth();
   const [value, setValue] = useState<string>("");
   const [toggleProfile, setToggleProfile] = useState<boolean>(false);
   const [toggleMenu, setToggleMenu] = useState<boolean>(false);
+
+  const LogOut = () => {
+    localStorage.removeItem("AccessToken");
+    localStorage.removeItem("RefreshToken");
+    setUser({} as any);
+    router.push("/login", { scroll: false });
+  };
+
   return (
     <>
       <div className="fixed top-0 w-full flex justify-between bg-white h-[56px] px-3 z-50">
@@ -97,7 +106,9 @@ function Header() {
                 borderRadius: "100%",
               }}
             />
-            <p className="text-[17px] font-medium ml-2">Log Out</p>
+            <p className="text-[17px] font-medium ml-2" onClick={LogOut}>
+              Log Out
+            </p>
           </div>
         </div>
       </div>
