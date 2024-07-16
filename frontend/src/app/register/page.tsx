@@ -1,9 +1,12 @@
 "use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import axios from "axios";
 import { baseServer } from "@/constant";
+import useAuth from "@/hooks/useAuth";
 
 interface Inputs {
   name: string;
@@ -14,6 +17,8 @@ interface Inputs {
 }
 
 function Register() {
+  const { user } = useAuth();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -21,6 +26,12 @@ function Register() {
     watch,
     setError,
   } = useForm<Inputs>();
+
+  useEffect(() => {
+    if (user !== null) {
+      router.push("/", { scroll: false });
+    }
+  }, []);
 
   const onSubmit = async (data: any) => {
     try {
@@ -65,7 +76,6 @@ function Register() {
             })}
           />
           <p className="text-red-400">{errors.email?.message}</p>
-          {/* <p className="text-red-400">{errors.serverError?.message}</p> */}
           <input
             type="text"
             className="my-2 py-[14px] px-[16px] border border-[#dddfe2] text-[#050505] w-[330px] h-[40px] rounded-[5px] focus:outline-none"
@@ -100,8 +110,6 @@ function Register() {
             })}
           />
           <p className="text-red-400">{errors.confirmPassword?.message}</p>
-          <span className="text-[15px] font-normal">Image</span>
-          <input type="file" className="my-2" />
           <button
             type="submit"
             className="my-2 px-[16px] text-white font-bold bg-[#0866ff] w-[330px] h-[40px] rounded-[5px] focus:outline-none"

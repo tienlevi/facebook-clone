@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
@@ -13,7 +14,7 @@ interface Inputs {
 }
 
 function Login() {
-  const { setUser } = useAuth();
+  const { user, setUser } = useAuth();
   const router = useRouter();
   const {
     register,
@@ -21,6 +22,13 @@ function Login() {
     formState: { errors },
     setError,
   } = useForm<Inputs>();
+
+  useEffect(() => {
+    if (user !== null) {
+      router.push("/", { scroll: false });
+    }
+  }, []);
+
   const onSubmit = async (data: any) => {
     try {
       const response = await axios.post(`${baseServer}/api/login`, data);
