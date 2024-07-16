@@ -13,4 +13,6 @@ app.use(cors());
 Connect();
 app.use("/api", router);
 
-export const viteNodeApp = app;
+app.listen(8080, () => {
+  console.log("Server is running on port http://localhost:8080");
+});
