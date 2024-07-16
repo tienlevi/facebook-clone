@@ -63,7 +63,7 @@ function useAuth() {
       axiosJWT.interceptors.request.eject(requestJWT);
       axiosJWT.interceptors.response.eject(responseJWT);
     };
-  }, [user, axiosJWT, refreshToken]);
+  }, []);
 
   return { user, setUser };
 }
