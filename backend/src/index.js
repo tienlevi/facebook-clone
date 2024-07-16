@@ -10,10 +10,11 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(
   cors({
-    origin: "*",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    origin: ["http://localhost:3000", "https://facebooks-clonee.vercel.app"],
+    methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
     preflightContinue: false,
-    optionsSuccessStatus: 204,
+    credentials: true,
+    optionsSuccessStatus: 200,
   })
 );
 
