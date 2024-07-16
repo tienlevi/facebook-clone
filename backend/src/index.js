@@ -13,6 +13,7 @@ app.use(
     origin: ["http://localhost:3000", "https://facebooks-clonee.vercel.app"],
     methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
     allowedHeaders: ["Content-Type"],
+    preflightContinue: false,
     credentials: true,
   })
 );
