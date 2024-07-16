@@ -5,12 +5,12 @@ import Connect from "./config/connect.js";
 import router from "./router/router.js";
 
 const app = express();
-Connect();
 
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
 
+Connect();
 app.use("/api", cors(), router);
 
 app.listen(8080, () => {
