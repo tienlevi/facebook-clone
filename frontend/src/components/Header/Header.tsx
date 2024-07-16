@@ -5,6 +5,7 @@ import { IoSearchSharp, IoMenu } from "react-icons/io5";
 import { TbLogout } from "react-icons/tb";
 import { SidebarMobile } from "../Sidebar/Sidebar";
 import useAuth from "@/hooks/useAuth";
+import Image from "next/image";
 
 function Header() {
   const router = useRouter();
@@ -76,7 +77,7 @@ function Header() {
         >
           <div className="flex items-center p-2 bg-white cursor-pointer shadow-[0_2px_12px_0_rgba(0,0,0,0.2)] rounded-[8px] hover:bg-[rgba(0,0,0,0.05)]">
             <img
-              src={user.avatar}
+              src={user?.avatar}
               alt=""
               width={40}
               height={40}

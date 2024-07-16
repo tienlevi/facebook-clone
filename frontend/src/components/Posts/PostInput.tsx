@@ -5,6 +5,7 @@ import useAuth from "@/hooks/useAuth";
 import UploadCloundinary from "@/utils/upload";
 import usePreview from "@/hooks/usePreview";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 interface Props {
   onPost: (data: any) => void;
@@ -61,7 +62,7 @@ function PostInput({ onPost }: Props) {
       </div>
       {open && (
         <div className="my-5">
-          {fileType === "image" && <img src={file} alt="" />}
+          {fileType === "image" && <Image src={file as any} alt="" />}
           {fileType === "video" && (
             <video controls className="w-full">
               <source src={file} type="video/mp4" className="object-cover" />

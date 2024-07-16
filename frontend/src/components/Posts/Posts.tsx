@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Post } from "@/interface";
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import useAuth from "@/hooks/useAuth";
+import Image from "next/image";
 
 interface Props {
   posts: Post[];
@@ -40,7 +41,7 @@ function Posts({ posts, editPost, deletePost }: Props) {
           <div className="flex items-center justify-between">
             <div className="flex">
               <div className="block">
-                <img
+                <Image
                   src={item.userInfo?.avatar}
                   alt=""
                   width={40}
