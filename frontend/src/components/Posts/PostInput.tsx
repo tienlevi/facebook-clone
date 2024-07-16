@@ -62,7 +62,7 @@ function PostInput({ onPost }: Props) {
       </div>
       {open && (
         <div className="my-5">
-          {fileType === "image" && <Image src={file as any} alt="" />}
+          {fileType === "image" && <img src={file as any} alt="" />}
           {fileType === "video" && (
             <video controls className="w-full">
               <source src={file} type="video/mp4" className="object-cover" />
