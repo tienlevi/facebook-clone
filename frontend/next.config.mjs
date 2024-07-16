@@ -12,7 +12,7 @@ const nextConfig = {
           {
             key: "Content-Security-Policy",
             value:
-              "default-src 'self' https:; script-src 'self' https: 'unsafe-inline' 'unsafe-eval'; style-src 'self' https: 'unsafe-inline';",
+              "default-src 'elf' https:; script-src 'elf' https: 'unsafe-inline' 'unsafe-eval'; style-src 'elf' https: 'unsafe-inline'; media-src 'elf' https: http://res.cloudinary.com;",
           },
         ],
       },
