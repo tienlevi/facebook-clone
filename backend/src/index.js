@@ -8,19 +8,9 @@ const app = express();
 
 app.use(express.json());
 app.use(morgan("dev"));
-app.use(
-  cors({
-    origin: ["http://localhost:3000", "https://facebooks-clonee.vercel.app"],
-    methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
-    preflightContinue: false,
-    credentials: true,
-  })
-);
+app.use(cors());
 
 Connect();
 app.use("/api", router);
 
-app.listen(8080, () => {
-  console.log("Server is running on port http://localhost:8080");
-});
+export const viteNodeApp = app;
