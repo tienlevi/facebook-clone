@@ -8,15 +8,7 @@ const app = express();
 
 app.use(express.json());
 app.use(morgan("dev"));
-app.use(
-  cors({
-    origin: ["http://localhost:3000", "https://facebooks-clonee.vercel.app"],
-    methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
-    preflightContinue: false,
-    credentials: true,
-    optionsSuccessStatus: 200,
-  })
-);
+app.use(cors());
 
 Connect();
 app.use("/api", router);
