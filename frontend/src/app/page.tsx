@@ -22,8 +22,8 @@ export default function Home() {
   const handlePost = useCallback(
     async (data: any) => {
       try {
-        // const response = await addPost(data);
-        // setPosts([...posts, response] as any);
+        const response = await addPost(data);
+        setPosts([...posts, response] as any);
       } catch (error) {
         console.log(error);
       }
