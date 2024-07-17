@@ -5,7 +5,6 @@ import useAuth from "@/hooks/useAuth";
 import UploadCloundinary from "@/utils/upload";
 import usePreview from "@/hooks/usePreview";
 import { toast } from "react-toastify";
-import Image from "next/image";
 
 interface Props {
   onPost: (data: any) => void;
@@ -18,8 +17,12 @@ function PostInput({ onPost }: Props) {
   const fileRef = useRef<HTMLInputElement>(null);
   const { register, handleSubmit } = useForm();
   const { file, fileType, handleChangeFile } = usePreview();
+  const limitSizeMB = (fileRef.current?.files?.[0].size as number) / 1024 ** 2;
 
   const onSubmit = async (data: any) => {
+    if (limitSizeMB > 50) {
+      return toast.warning("Please select a file less than 50MB");
+    }
     try {
       setIsLoading(true);
       const fileCloudinary = await UploadCloundinary(
