@@ -14,7 +14,7 @@ async function UploadCloundinary(file: any) {
     formData.append("file", file);
 
     const response = await axios.post(baseUrl, formData);
-    return response.data.url;
+    return response.data.secure_url;
   } catch (error) {
     console.log(error);
   }

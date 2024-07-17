@@ -25,6 +25,7 @@ function PostInput({ onPost }: Props) {
       const fileCloudinary = await UploadCloundinary(
         fileRef.current?.files?.[0]
       );
+
       toast.success("Post success");
       onPost({
         ...data,
