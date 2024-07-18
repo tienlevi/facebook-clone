@@ -2,7 +2,12 @@ import { Router } from "express";
 import { Login, Register } from "../controllers/auth.js";
 import AuthenticateToken from "../middleware/AuthenticateToken.js";
 import { AccessToken, RefreshToken } from "../controllers/token.js";
-import { addPost, deletePost, getAllPosts } from "../controllers/posts.js";
+import {
+  addPost,
+  deletePost,
+  editPost,
+  getAllPosts,
+} from "../controllers/posts.js";
 
 const router = Router();
 
@@ -15,5 +20,6 @@ router.post("/login", Login, AuthenticateToken);
 router.get("/posts", getAllPosts);
 router.post("/posts", addPost);
 router.delete("/posts/:id", deletePost);
+router.put("/posts/:id", editPost);
 
 export default router;

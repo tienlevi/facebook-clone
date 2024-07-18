@@ -5,7 +5,7 @@ import Header from "@/components/Header/Header";
 import PostInput from "@/components/Posts/PostInput";
 import Posts from "@/components/Posts/Posts";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
-import { addPost, deletePost, getPosts } from "@/services/post";
+import { addPost, deletePost, editPost, getPosts } from "@/services/post";
 import { toast } from "react-toastify";
 
 export default function Home() {
@@ -39,6 +39,23 @@ export default function Home() {
     }
   };
 
+  const handleEdit = useCallback(
+    async (data: any) => {
+      try {
+        const response = await editPost(data);
+        setPosts(
+          posts.map((item: any) =>
+            item.id === data.id ? response : item
+          ) as any
+        );
+        return response;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [posts]
+  );
+
   return (
     <>
       <Header />
@@ -47,7 +64,11 @@ export default function Home() {
           <Sidebar />
           <div className="w-1/2 mx-2">
             <PostInput onPost={handlePost} />
-            <Posts posts={posts} deletePost={handleDelete} />
+            <Posts
+              posts={posts}
+              deletePost={handleDelete}
+              editPost={handleEdit}
+            />
           </div>
           <Contact />
         </div>

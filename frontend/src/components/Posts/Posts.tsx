@@ -1,91 +1,200 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Post } from "@/interface";
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import useAuth from "@/hooks/useAuth";
 import Image from "next/image";
+import { useForm } from "react-hook-form";
+import usePreview from "@/hooks/usePreview";
+import UploadCloundinary from "@/utils/upload";
+import { toast } from "react-toastify";
 
 interface Props {
   posts: Post[];
-  editPost?: (data: any) => void;
+  editPost: (data: any) => void;
   deletePost: (id: string) => void;
 }
 
 function Posts({ posts, editPost, deletePost }: Props) {
   const { user } = useAuth();
+  const { handleSubmit, register, reset } = useForm();
   const [togglePost, setTogglePost] = useState<string | null>(null || "");
+  const [selectPost, setSelectPost] = useState<null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const { file, fileType, handleChangeFile } = usePreview();
+  const limitSizeMB = (fileRef.current?.files?.[0]?.size as number) / 1024 ** 2;
 
   const handleTogglePost = (id: string) => {
     setTogglePost(togglePost === id ? null : id);
   };
 
+  const onSubmit = async (data: any) => {
+    if (limitSizeMB > 50) {
+      return toast.warning("Please select a file less than 50MB");
+    }
+    try {
+      setIsLoading(true);
+      const fileCloudinary = await UploadCloundinary(
+        fileRef.current?.files?.[0]
+      );
+
+      toast.success("Post success");
+      editPost({
+        ...data,
+        fileSrc: fileCloudinary,
+        fileType: fileType,
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="relative block mt-2">
-      {posts?.map((item, index: number) => (
-        <div
-          key={index}
-          className="relative block bg-white rounded-[8px] p-4 shadow-[0_1px_2px_0_rgba(0,0,0,0.2)] my-4"
-        >
-          {togglePost === item._id && (
-            <div className="absolute top-16 p-2 right-5 w-1/2 bg-white rounded-[10px] shadow-[0_12px_24px_0_rgba(0,0,0,0.2)] cursor-pointer z-20">
-              <p className="px-5 py-2 rounded-[10px] hover:bg-[rgb(234,235,236)]">
-                Edit Post
-              </p>
-              <p
-                className="px-5 py-2 rounded-[10px] hover:bg-[rgb(234,235,236)]"
-                onClick={() => deletePost(item._id!)}
-              >
-                Delete Post
-              </p>
+      {posts?.map((item, index: number) =>
+        selectPost === item._id ? (
+          <form
+            key={index}
+            onSubmit={handleSubmit(onSubmit)}
+            className="block bg-white rounded-[8px] p-4 shadow-[0_1px_2px_0_rgba(0,0,0,0.2)]"
+          >
+            <div className="flex pb-4 border-b border-[rgb(228,230,235)]">
+              <textarea
+                {...register("title", { required: true })}
+                className="w-full ml-2 pl-2 text-[rgb(28,30,33)] bg-[rgb(240,242,245)] rounded-[20px] resize-none focus:outline-none"
+              ></textarea>
             </div>
-          )}
-          <div className="flex items-center justify-between">
-            <div className="flex">
-              <div className="block">
-                <Image
-                  src={item.userInfo?.avatar}
-                  alt=""
-                  width={40}
-                  height={40}
-                  className="rounded-full w-[40px] h-[40px] object-cover"
-                />
-              </div>
-              <div className="flex flex-col ml-2">
-                <p className="text-[15px] font-semibold">
-                  {item.userInfo?.name}
-                </p>
-                <p className="text-[14px] text-[rgb(101,103,107)]">
-                  {new Date(item.createdAt).toLocaleString()}
-                </p>
-              </div>
-            </div>
-            {user._id === item.userId && (
-              <div
-                className="block p-2 rounded-full cursor-pointer hover:bg-[#F0F2F5]"
-                onClick={() => handleTogglePost(item._id!)}
-              >
-                <IoEllipsisHorizontal
-                  style={{ fontSize: 25, color: "#1c1e21" }}
-                />
-              </div>
-            )}
-          </div>
-          <div className="text-[17px] my-2">{item.title}</div>
-          <div className="w-full">
-            {item.fileType === "image" && (
-              <img src={item.fileSrc} alt="" className="w-full object-cover" />
-            )}
-            {item.fileType === "video" && (
-              <video controls className="w-full">
-                <source
+            <div className="my-5">
+              {fileType === "image" && <img src={file as any} alt="" />}
+              {fileType === "video" && (
+                <video controls className="w-full">
+                  <source
+                    src={file}
+                    type="video/mp4"
+                    className="object-cover"
+                  />
+                </video>
+              )}
+              {fileType === "" && item.fileType === "image" && (
+                <img
                   src={item.fileSrc}
-                  type="video/mp4"
-                  className="object-cover"
+                  alt=""
+                  className="w-full object-cover"
                 />
-              </video>
+              )}
+              {fileType === "" && item.fileType === "video" && (
+                <video controls className="w-full">
+                  <source
+                    src={item.fileSrc}
+                    type="video/mp4"
+                    className="object-cover"
+                  />
+                </video>
+              )}
+              <input type="file" ref={fileRef} onChange={handleChangeFile} />
+            </div>
+            <div className="flex justify-between">
+              {isLoading ? (
+                <p className="bg-blue-500 w-[100px] text-white py-2 flex items-center justify-center mt-4 rounded-[10px] cursor-pointer">
+                  Loading...
+                </p>
+              ) : (
+                <>
+                  <p
+                    onClick={() => setSelectPost(null)}
+                    className="bg-red-500 w-[100px] text-white py-2 flex items-center justify-center mt-4 rounded-[10px] cursor-pointer"
+                  >
+                    Cancel
+                  </p>
+                  <button
+                    type="submit"
+                    className="bg-blue-500 w-[100px] text-white py-2 flex items-center justify-center mt-4 rounded-[10px] cursor-pointer"
+                  >
+                    Confirm
+                  </button>
+                </>
+              )}
+            </div>
+          </form>
+        ) : (
+          <div
+            key={index}
+            className="relative block bg-white rounded-[8px] p-4 shadow-[0_1px_2px_0_rgba(0,0,0,0.2)] my-4"
+          >
+            {togglePost === item._id && (
+              <div className="absolute top-16 p-2 right-5 w-1/2 bg-white rounded-[10px] shadow-[0_12px_24px_0_rgba(0,0,0,0.2)] cursor-pointer z-20">
+                <p
+                  className="px-5 py-2 rounded-[10px] hover:bg-[rgb(234,235,236)]"
+                  onClick={() => {
+                    reset({ _id: item._id, title: item.title });
+                    setSelectPost(item._id as any);
+                  }}
+                >
+                  Edit Post
+                </p>
+                <p
+                  className="px-5 py-2 rounded-[10px] hover:bg-[rgb(234,235,236)]"
+                  onClick={() => deletePost(item._id!)}
+                >
+                  Delete Post
+                </p>
+              </div>
             )}
+            <div className="flex items-center justify-between">
+              <div className="flex">
+                <div className="block">
+                  <Image
+                    src={item.userInfo?.avatar}
+                    alt=""
+                    width={40}
+                    height={40}
+                    className="rounded-full w-[40px] h-[40px] object-cover"
+                  />
+                </div>
+                <div className="flex flex-col ml-2">
+                  <p className="text-[15px] font-semibold">
+                    {item.userInfo?.name}
+                  </p>
+                  <p className="text-[14px] text-[rgb(101,103,107)]">
+                    {new Date(item.createdAt).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+              {user._id === item.userId && (
+                <div
+                  className="block p-2 rounded-full cursor-pointer hover:bg-[#F0F2F5]"
+                  onClick={() => handleTogglePost(item._id!)}
+                >
+                  <IoEllipsisHorizontal
+                    style={{ fontSize: 25, color: "#1c1e21" }}
+                  />
+                </div>
+              )}
+            </div>
+            <div className="text-[17px] my-2">{item.title}</div>
+            <div className="w-full">
+              {item.fileType === "image" && (
+                <img
+                  src={item.fileSrc}
+                  alt=""
+                  className="w-full object-cover"
+                />
+              )}
+              {item.fileType === "video" && (
+                <video controls className="w-full">
+                  <source
+                    src={item.fileSrc}
+                    type="video/mp4"
+                    className="object-cover"
+                  />
+                </video>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      )}
     </div>
   );
 }
