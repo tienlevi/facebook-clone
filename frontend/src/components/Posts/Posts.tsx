@@ -44,6 +44,7 @@ function Posts({ posts, editPost, deletePost }: Props) {
         fileSrc: fileCloudinary,
         fileType: fileType,
       });
+      setSelectPost(null);
     } catch (error) {
       console.log(error);
     } finally {
