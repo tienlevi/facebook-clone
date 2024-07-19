@@ -7,6 +7,7 @@ import Posts from "@/components/Posts/Posts";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { addPost, deletePost, editPost, getPosts } from "@/services/post";
 import { toast } from "react-toastify";
+import { deleteImageCloundinary } from "@/utils/cloudinary";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
@@ -31,9 +32,11 @@ export default function Home() {
     [posts]
   );
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, publicId: string) => {
+    console.log(publicId);
+
     if (confirm("Are you sure want to delete ?")) {
-      await deletePost(id);
+      (await deletePost(id)) && (await deleteImageCloundinary(publicId));
       setPosts(posts.filter((item: any) => item._id !== id));
       toast.success("Delete success");
     }

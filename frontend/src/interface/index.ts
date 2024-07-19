@@ -16,6 +16,7 @@ export interface Post {
     avatar: string;
   };
   title: string;
+  publicId: string;
   fileSrc: string;
   fileType: string;
   createdAt: string;

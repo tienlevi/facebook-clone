@@ -10,6 +10,7 @@ const Post = new mongoose.Schema(
       name: { type: String, require: true },
       avatar: { type: String },
     },
+    publicId: { type: String },
     title: { type: String, require: true },
     fileSrc: { type: String },
     fileType: { type: String },

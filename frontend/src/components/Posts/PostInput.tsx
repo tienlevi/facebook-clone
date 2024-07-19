@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { FaImages } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import useAuth from "@/hooks/useAuth";
-import UploadCloundinary from "@/utils/upload";
+import { UploadCloundinary } from "@/utils/cloudinary";
 import usePreview from "@/hooks/usePreview";
 import { toast } from "react-toastify";
 
@@ -28,13 +28,13 @@ function PostInput({ onPost }: Props) {
       const fileCloudinary = await UploadCloundinary(
         fileRef.current?.files?.[0]
       );
-
       toast.success("Post success");
       onPost({
         ...data,
         userId: user._id,
         userInfo: { name: user.name, avatar: user.avatar },
-        fileSrc: fileCloudinary,
+        publicId: fileCloudinary.public_id,
+        fileSrc: fileCloudinary.secure_url,
         fileType: fileType,
       });
     } catch (error) {

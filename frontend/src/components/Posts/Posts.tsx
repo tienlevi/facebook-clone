@@ -5,13 +5,13 @@ import useAuth from "@/hooks/useAuth";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import usePreview from "@/hooks/usePreview";
-import UploadCloundinary from "@/utils/upload";
+import { UploadCloundinary } from "@/utils/cloudinary";
 import { toast } from "react-toastify";
 
 interface Props {
   posts: Post[];
   editPost: (data: any) => void;
-  deletePost: (id: string) => void;
+  deletePost: (id: string, publicId: string) => void;
 }
 
 function Posts({ posts, editPost, deletePost }: Props) {
@@ -137,7 +137,7 @@ function Posts({ posts, editPost, deletePost }: Props) {
                 </p>
                 <p
                   className="px-5 py-2 rounded-[10px] hover:bg-[rgb(234,235,236)]"
-                  onClick={() => deletePost(item._id!)}
+                  onClick={() => deletePost(item._id!, item.publicId)}
                 >
                   Delete Post
                 </p>
