@@ -12,7 +12,7 @@ export const UploadCloundinary = async (file: any) => {
 
     formData.append("upload_preset", presetName);
     formData.append("folder", folderName);
-    formData.append("file", file);
+    formData.append("file", file ?? null);
 
     const response = await axios.post(url, formData);
     return response.data;

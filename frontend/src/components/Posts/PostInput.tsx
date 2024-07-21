@@ -15,9 +15,14 @@ function PostInput({ onPost }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
   const fileRef = useRef<HTMLInputElement>(null);
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm();
   const { file, fileType, handleChangeFile } = usePreview();
-  const limitSizeMB = (fileRef.current?.files?.[0].size as number) / 1024 ** 2;
+  const limitSizeMB = (fileRef.current?.files?.[0]?.size as number) / 1024 ** 2;
 
   const onSubmit = async (data: any) => {
     if (limitSizeMB > 50) {
@@ -26,17 +31,18 @@ function PostInput({ onPost }: Props) {
     try {
       setIsLoading(true);
       const fileCloudinary = await UploadCloundinary(
-        fileRef.current?.files?.[0]
+        fileRef.current?.files?.[0] ?? ""
       );
       toast.success("Post success");
       onPost({
         ...data,
         userId: user._id,
         userInfo: { name: user.name, avatar: user.avatar },
-        publicId: fileCloudinary.public_id,
-        fileSrc: fileCloudinary.secure_url,
-        fileType: fileType,
+        publicId: fileCloudinary?.public_id || "",
+        fileSrc: fileCloudinary?.secure_url || "",
+        fileType: fileType || "",
       });
+      reset();
     } catch (error) {
       console.log(error);
     } finally {
@@ -58,12 +64,16 @@ function PostInput({ onPost }: Props) {
           className="rounded-full w-[40px] h-[40px] object-cover"
         />
         <input
-          {...register("title", { required: true })}
+          {...register("title", { required: "Field cannot be empty" })}
           type="text"
           className="w-full ml-2 pl-2 text-[rgb(28,30,33)] bg-[rgb(240,242,245)] rounded-[20px] focus:outline-none"
           placeholder="What's on your mind ?"
+          disabled={isSubmitting}
         />
       </div>
+      <p className="text-red-500">
+        {errors?.title && (errors.title.message as string)}
+      </p>
       {open && (
         <div className="my-5">
           {fileType === "image" && <img src={file as any} alt="" />}

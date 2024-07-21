@@ -22,19 +22,13 @@ export default function Home() {
 
   const handlePost = useCallback(
     async (data: any) => {
-      try {
-        const response = await addPost(data);
-        setPosts([...posts, response] as any);
-      } catch (error) {
-        console.log(error);
-      }
+      const response = await addPost(data);
+      setPosts([...posts, response] as any);
     },
     [posts]
   );
 
   const handleDelete = async (id: string, publicId: string) => {
-    console.log(publicId);
-
     if (confirm("Are you sure want to delete ?")) {
       (await deletePost(id)) && (await deleteImageCloundinary(publicId));
       setPosts(posts.filter((item: any) => item._id !== id));

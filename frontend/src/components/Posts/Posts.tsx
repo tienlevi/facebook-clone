@@ -16,7 +16,12 @@ interface Props {
 
 function Posts({ posts, editPost, deletePost }: Props) {
   const { user } = useAuth();
-  const { handleSubmit, register, reset } = useForm();
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm();
   const [togglePost, setTogglePost] = useState<string | null>(null || "");
   const [selectPost, setSelectPost] = useState<null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -64,8 +69,12 @@ function Posts({ posts, editPost, deletePost }: Props) {
             <div className="flex pb-4 border-b border-[rgb(228,230,235)]">
               <textarea
                 {...register("title", { required: true })}
+                disabled={isSubmitting}
                 className="w-full ml-2 pl-2 text-[rgb(28,30,33)] bg-[rgb(240,242,245)] rounded-[20px] resize-none focus:outline-none"
               ></textarea>
+              <p className="text-red-500">
+                {errors?.title && (errors.title.message as string)}
+              </p>
             </div>
             <div className="my-5">
               {fileType === "image" && <img src={file as any} alt="" />}
