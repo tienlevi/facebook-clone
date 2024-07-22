@@ -8,6 +8,7 @@ import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { addPost, deletePost, editPost, getPosts } from "@/services/post";
 import { toast } from "react-toastify";
 import { deleteImageCloundinary } from "@/utils/cloudinary";
+import Loading from "@/components/Loading/Loading";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
@@ -61,11 +62,15 @@ export default function Home() {
           <Sidebar />
           <div className="w-1/2 mx-2">
             <PostInput onPost={handlePost} />
-            <Posts
-              posts={posts}
-              deletePost={handleDelete}
-              editPost={handleEdit}
-            />
+            {posts.length === 0 ? (
+              <Loading />
+            ) : (
+              <Posts
+                posts={posts}
+                deletePost={handleDelete}
+                editPost={handleEdit}
+              />
+            )}
           </div>
           <Contact />
         </div>
