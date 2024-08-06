@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import Contact from "@/components/Contact/Contact";
 import Header from "@/components/Header/Header";
 import PostInput from "@/components/Posts/PostInput";
@@ -9,8 +10,11 @@ import { addPost, deletePost, editPost, getPosts } from "@/services/post";
 import { toast } from "react-toastify";
 import { deleteImageCloundinary } from "@/utils/cloudinary";
 import Loading from "@/components/Loading/Loading";
+import useAuth from "@/hooks/useAuth";
 
 export default function Home() {
+  const { user } = useAuth();
+  const router = useRouter();
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -19,6 +23,10 @@ export default function Home() {
       setPosts(response);
     };
     getData();
+  }, []);
+
+  useEffect(() => {
+    user === null && router.push("/login");
   }, []);
 
   const handlePost = useCallback(

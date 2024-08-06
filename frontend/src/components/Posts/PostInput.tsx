@@ -36,8 +36,8 @@ function PostInput({ onPost }: Props) {
       toast.success("Post success");
       onPost({
         ...data,
-        userId: user._id,
-        userInfo: { name: user.name, avatar: user.avatar },
+        userId: user?._id,
+        userInfo: { name: user?.name, avatar: user?.avatar },
         publicId: fileCloudinary?.public_id || "",
         fileSrc: fileCloudinary?.secure_url || "",
         fileType: fileType || "",
@@ -57,7 +57,7 @@ function PostInput({ onPost }: Props) {
     >
       <div className="flex pb-4 border-b border-[rgb(228,230,235)]">
         <img
-          src={user.avatar}
+          src={user?.avatar}
           alt=""
           width={40}
           height={40}

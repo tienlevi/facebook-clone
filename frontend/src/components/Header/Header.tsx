@@ -62,7 +62,7 @@ function Header() {
             onClick={() => setToggleProfile(!toggleProfile)}
           >
             <img
-              src={user.avatar}
+              src={user?.avatar}
               alt=""
               width={40}
               height={40}
@@ -83,7 +83,7 @@ function Header() {
               height={40}
               className="w-[40px] h-[40px] object-cover rounded-full"
             />
-            <p className="text-[17px] font-medium ml-2">{user.name}</p>
+            <p className="text-[17px] font-medium ml-2">{user?.name}</p>
           </div>
           <div className="flex items-center px-2 py-4 my-2 hover:bg-[rgba(0,0,0,0.05)] rounded-[8px] cursor-pointer">
             <FaMoon

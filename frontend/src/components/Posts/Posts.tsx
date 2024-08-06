@@ -28,12 +28,11 @@ function Posts({ posts, editPost, deletePost }: Props) {
   const fileRef = useRef<HTMLInputElement>(null);
   const { file, fileType, handleChangeFile } = usePreview();
   const limitSizeMB = (fileRef.current?.files?.[0]?.size as number) / 1024 ** 2;
-  console.log("User id", user._id);
   const sortPosts = posts.sort((a, b) => {
-    if (user._id === a.userId) {
+    if (user?._id === a.userId) {
       return -1;
     }
-    if (user._id === b.userId) {
+    if (user?._id === b.userId) {
       return 1;
     }
     return 0;
@@ -182,7 +181,7 @@ function Posts({ posts, editPost, deletePost }: Props) {
                   </p>
                 </div>
               </div>
-              {user._id === item.userId && (
+              {user?._id === item.userId && (
                 <div
                   className="block p-2 rounded-full cursor-pointer hover:bg-[#F0F2F5]"
                   onClick={() => handleTogglePost(item._id!)}

@@ -7,7 +7,7 @@ import useToken from "./useToken";
 import { baseServer } from "@/constant";
 
 function useAuth() {
-  const [user, setUser] = useState({} as User);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const axiosJWT = axios.create();
   const refreshToken = useToken();
@@ -22,7 +22,6 @@ function useAuth() {
         });
         setUser(data.user);
       } catch (error) {
-        router.push("/login", { scroll: false });
         console.log(error);
       }
     };

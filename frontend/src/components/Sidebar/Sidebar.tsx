@@ -15,13 +15,13 @@ export function Sidebar() {
       <div className="border-b border-gray-300">
         <div className="my-3 flex items-center">
           <img
-            src={user.avatar}
+            src={user?.avatar}
             alt=""
             width={40}
             height={40}
             className="w-[40px] h-[40px] object-cover rounded-full"
           />
-          <p className="text-[19px] font-medium ml-3">{user.name}</p>
+          <p className="text-[19px] font-medium ml-3">{user?.name}</p>
         </div>
         <div className="my-3 flex items-center">
           <FaUserFriends style={{ fontSize: 35 }} />
