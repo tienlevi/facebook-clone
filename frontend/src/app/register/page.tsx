@@ -1,6 +1,4 @@
 "use client";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Link from "next/link";
@@ -18,7 +16,8 @@ interface Inputs {
 
 function Register() {
   const { user } = useAuth();
-  const router = useRouter();
+  console.log(user);
+
   const {
     register,
     handleSubmit,
@@ -26,12 +25,6 @@ function Register() {
     watch,
     setError,
   } = useForm<Inputs>();
-
-  useEffect(() => {
-    if (user !== null) {
-      router.push("/", { scroll: false });
-    }
-  }, []);
 
   const onSubmit = async (data: any) => {
     try {

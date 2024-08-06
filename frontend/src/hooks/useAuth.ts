@@ -12,6 +12,8 @@ function useAuth() {
   const axiosJWT = axios.create();
   const refreshToken = useToken();
 
+  if (user !== null) router.push("/");
+
   useEffect(() => {
     const accessToken = localStorage?.getItem("AccessToken");
     const getData = async () => {
@@ -32,7 +34,7 @@ function useAuth() {
     const accessToken = localStorage.getItem("AccessToken");
     const requestJWT = axiosJWT.interceptors.request.use(
       async (config) => {
-        const decodedToken: any = jwtDecode(accessToken as string);
+        const decodedToken: any = jwtDecode(accessToken!);
         const currentDate = new Date();
         const newAccessToken = await refreshToken();
         if ((decodedToken.exp as number) * 1000 < currentDate.getTime()) {

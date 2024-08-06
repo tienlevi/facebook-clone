@@ -17,7 +17,7 @@ function Header() {
   const LogOut = () => {
     localStorage.removeItem("AccessToken");
     localStorage.removeItem("RefreshToken");
-    setUser({} as any);
+    setUser(null);
     router.push("/login", { scroll: false });
   };
 
