@@ -22,12 +22,22 @@ function Posts({ posts, editPost, deletePost }: Props) {
     reset,
     formState: { errors, isSubmitting },
   } = useForm();
-  const [togglePost, setTogglePost] = useState<string | null>(null || "");
+  const [togglePost, setTogglePost] = useState<string | null>(null);
   const [selectPost, setSelectPost] = useState<null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const { file, fileType, handleChangeFile } = usePreview();
   const limitSizeMB = (fileRef.current?.files?.[0]?.size as number) / 1024 ** 2;
+  console.log("User id", user._id);
+  const sortPosts = posts.sort((a, b) => {
+    if (user._id === a.userId) {
+      return -1;
+    }
+    if (user._id === b.userId) {
+      return 1;
+    }
+    return 0;
+  });
 
   const handleTogglePost = (id: string) => {
     setTogglePost(togglePost === id ? null : id);
@@ -59,7 +69,7 @@ function Posts({ posts, editPost, deletePost }: Props) {
 
   return (
     <div className="relative block mt-2">
-      {posts?.map((item, index: number) =>
+      {sortPosts?.map((item, index: number) =>
         selectPost === item._id ? (
           <form
             key={index}
