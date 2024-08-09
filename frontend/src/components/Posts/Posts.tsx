@@ -5,16 +5,16 @@ import useAuth from "@/hooks/useAuth";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import usePreview from "@/hooks/usePreview";
-import { UploadCloundinary } from "@/utils/cloudinary";
-import { toast } from "react-toastify";
 
 interface Props {
   posts: Post[];
   editPost: (data: any) => void;
   deletePost: (id: string, publicId: string) => void;
+  isLoading: boolean;
+  fileRef: any;
 }
 
-function Posts({ posts, editPost, deletePost }: Props) {
+function Posts({ posts, editPost, deletePost, isLoading, fileRef }: Props) {
   const { user } = useAuth();
   const {
     handleSubmit,
@@ -24,10 +24,7 @@ function Posts({ posts, editPost, deletePost }: Props) {
   } = useForm();
   const [togglePost, setTogglePost] = useState<string | null>(null);
   const [selectPost, setSelectPost] = useState<null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
   const { file, fileType, handleChangeFile } = usePreview();
-  const limitSizeMB = (fileRef.current?.files?.[0]?.size as number) / 1024 ** 2;
   const sortPosts = posts.sort((a, b) => {
     if (user?._id === a.userId) {
       return -1;
@@ -43,27 +40,7 @@ function Posts({ posts, editPost, deletePost }: Props) {
   };
 
   const onSubmit = async (data: any) => {
-    if (limitSizeMB > 50) {
-      return toast.warning("Please select a file less than 50MB");
-    }
-    try {
-      setIsLoading(true);
-      const fileCloudinary = await UploadCloundinary(
-        fileRef.current?.files?.[0]
-      );
-
-      toast.success("Post success");
-      editPost({
-        ...data,
-        fileSrc: fileCloudinary,
-        fileType: fileType,
-      });
-      setSelectPost(null);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
+    editPost({ ...data, fileType: fileType });
   };
 
   return (

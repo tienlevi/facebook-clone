@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Contact from "@/components/Contact/Contact";
 import Header from "@/components/Header/Header";
 import PostInput from "@/components/Posts/PostInput";
@@ -7,11 +7,17 @@ import Posts from "@/components/Posts/Posts";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { addPost, deletePost, editPost, getPosts } from "@/services/post";
 import { toast } from "react-toastify";
-import { deleteImageCloundinary } from "@/utils/cloudinary";
+import { deleteImageCloundinary, UploadCloundinary } from "@/utils/cloudinary";
 import Loading from "@/components/Loading/Loading";
+import useAuth from "@/hooks/useAuth";
+import { Post } from "@/interface";
 
 function Home() {
-  const [posts, setPosts] = useState([]);
+  const { user } = useAuth();
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const limitSizeMB = (fileRef.current?.files?.[0]?.size as number) / 1024 ** 2;
 
   useEffect(() => {
     const getData = async () => {
@@ -23,8 +29,28 @@ function Home() {
 
   const handlePost = useCallback(
     async (data: any) => {
-      const response = await addPost(data);
-      setPosts([...posts, response] as any);
+      if (limitSizeMB > 50) {
+        return toast.warning("Please select a file less than 50MB");
+      }
+      try {
+        setIsLoading(true);
+        const fileCloudinary = await UploadCloundinary(
+          fileRef.current?.files?.[0] ?? ""
+        );
+        toast.success("Post success");
+        const response = await addPost({
+          ...data,
+          userId: user?._id,
+          userInfo: { name: user?.name, avatar: user?.avatar },
+          publicId: fileCloudinary?.public_id || "",
+          fileSrc: fileCloudinary?.secure_url || "",
+        });
+        setPosts([...posts, response] as any);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
     },
     [posts]
   );
@@ -39,16 +65,29 @@ function Home() {
 
   const handleEdit = useCallback(
     async (data: any) => {
+      if (limitSizeMB > 50) {
+        return toast.warning("Please select a file less than 50MB");
+      }
       try {
-        const response = await editPost(data);
-        setPosts(
-          posts.map((item: any) =>
-            item.id === data.id ? response : item
-          ) as any
+        setIsLoading(true);
+        const fileCloudinary = await UploadCloundinary(
+          fileRef.current?.files?.[0] ?? ""
         );
-        return response;
+        toast.success("Edit success");
+        const response = await editPost({
+          ...data,
+          userId: user?._id,
+          userInfo: { name: user?.name, avatar: user?.avatar },
+          publicId: fileCloudinary?.public_id || "",
+          fileSrc: fileCloudinary?.secure_url || "",
+        });
+        setPosts(
+          posts.map((item) => (item?._id === data._id ? response : item))
+        );
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
     },
     [posts]
@@ -61,7 +100,11 @@ function Home() {
         <div className="flex">
           <Sidebar />
           <div className="w-1/2 mx-2">
-            <PostInput onPost={handlePost} />
+            <PostInput
+              onPost={handlePost}
+              isLoading={isLoading}
+              fileRef={fileRef}
+            />
             {posts.length === 0 ? (
               <Loading />
             ) : (
@@ -69,6 +112,8 @@ function Home() {
                 posts={posts}
                 deletePost={handleDelete}
                 editPost={handleEdit}
+                isLoading={isLoading}
+                fileRef={fileRef}
               />
             )}
           </div>

@@ -1,53 +1,27 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { FaImages } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import useAuth from "@/hooks/useAuth";
-import { UploadCloundinary } from "@/utils/cloudinary";
 import usePreview from "@/hooks/usePreview";
-import { toast } from "react-toastify";
 
 interface Props {
   onPost: (data: any) => void;
+  isLoading: boolean;
+  fileRef: any;
 }
 
-function PostInput({ onPost }: Props) {
+function PostInput({ onPost, isLoading, fileRef }: Props) {
   const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
-  const fileRef = useRef<HTMLInputElement>(null);
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm();
   const { file, fileType, handleChangeFile } = usePreview();
-  const limitSizeMB = (fileRef.current?.files?.[0]?.size as number) / 1024 ** 2;
 
-  const onSubmit = async (data: any) => {
-    if (limitSizeMB > 50) {
-      return toast.warning("Please select a file less than 50MB");
-    }
-    try {
-      setIsLoading(true);
-      const fileCloudinary = await UploadCloundinary(
-        fileRef.current?.files?.[0] ?? ""
-      );
-      toast.success("Post success");
-      onPost({
-        ...data,
-        userId: user?._id,
-        userInfo: { name: user?.name, avatar: user?.avatar },
-        publicId: fileCloudinary?.public_id || "",
-        fileSrc: fileCloudinary?.secure_url || "",
-        fileType: fileType || "",
-      });
-      reset();
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
+  const onSubmit = (data: any) => {
+    onPost({ ...data, fileType: fileType });
   };
 
   return (
