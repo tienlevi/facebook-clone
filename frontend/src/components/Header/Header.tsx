@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaFacebook, FaMoon } from "react-icons/fa";
 import { IoSearchSharp, IoMenu } from "react-icons/io5";
@@ -21,8 +21,20 @@ function Header() {
     router.push("/login", { scroll: false });
   };
 
+  useLayoutEffect(() => {
+    const resize = () => {
+      if (window.innerWidth > 768) {
+        setToggleMenu(false);
+      }
+    };
+
+    window.addEventListener("resize", resize);
+
+    return () => window.removeEventListener("resize", resize);
+  });
+
   return (
-    <>
+    <div>
       <div className="fixed top-0 w-full flex justify-between bg-white h-[56px] px-3 z-50">
         <div className="flex items-center">
           <FaFacebook style={{ color: "#3578E5", fontSize: 40 }} />
@@ -114,7 +126,7 @@ function Header() {
         </div>
       </div>
       <SidebarMobile active={toggleMenu} />
-    </>
+    </div>
   );
 }
 

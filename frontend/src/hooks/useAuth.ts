@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
@@ -12,11 +12,9 @@ function useAuth() {
   const axiosJWT = axios.create();
   const refreshToken = useToken();
 
-  if (user !== null) router.push("/");
-
   useEffect(() => {
     const accessToken = localStorage?.getItem("AccessToken");
-    const getData = async () => {
+    (async () => {
       try {
         const { data } = await axiosJWT.get(`${baseServer}/api/auth`, {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -26,11 +24,10 @@ function useAuth() {
       } catch (error) {
         console.log(error);
       }
-    };
-    getData();
+    })();
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const accessToken = localStorage.getItem("AccessToken");
     const requestJWT = axiosJWT.interceptors.request.use(
       async (config) => {

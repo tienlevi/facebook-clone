@@ -25,7 +25,7 @@ function Login() {
 
   useEffect(() => {
     if (user !== null) {
-      router.push("/", { scroll: false });
+      router.push("/");
     }
   }, []);
 

@@ -45,8 +45,8 @@ export function SidebarMobile({ active }: Props) {
   return (
     <div
       className={`${
-        active ? "block" : "hidden"
-      } fixed left-0 top-[55px] right-0 flex flex-col w-full h-full px-3 z-50 bg-[#F0F2F5]`}
+        active ? "flex" : "hidden"
+      } fixed left-0 top-[55px] right-0 flex-col w-full h-full px-3 z-50 bg-[#F0F2F5]`}
     >
       <div className="border-b border-gray-300">
         <div className="my-3 flex items-center">
