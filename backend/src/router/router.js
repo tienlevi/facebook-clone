@@ -13,7 +13,7 @@ const router = Router();
 
 // Auth
 router.post("/refresh-token", RefreshToken);
-router.get("/auth", AuthenticateToken, AccessToken);
+router.get("/auth", AccessToken);
 router.post("/register", Register);
 router.post("/login", Login, AuthenticateToken);
 // Posts
