@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import useAuth from "@/hooks/useAuth";
 import { baseServer } from "@/constant";
+import Loading from "@/components/Loading/Loading";
 
 interface Inputs {
   email: string;
@@ -14,25 +15,31 @@ interface Inputs {
 }
 
 function Login() {
-  const { user, setUser } = useAuth();
+  const { status, isLoadingUser } = useAuth();
   const router = useRouter();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     setError,
   } = useForm<Inputs>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (user !== null) {
+    if (status === 200) {
       router.push("/");
     }
+  }, [status, isLoadingUser]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
   }, []);
 
   const onSubmit = async (data: any) => {
     try {
       const response = await axios.post(`${baseServer}/api/login`, data);
-      setUser(data);
       router.push("/", { scroll: false });
       toast.success("Login success");
       localStorage.setItem("AccessToken", response.data?.accessToken);
@@ -47,6 +54,10 @@ function Login() {
       }
     }
   };
+
+  if (isLoading) return <Loading />;
+  if (status === 200) return <Loading />;
+
   return (
     <>
       <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
@@ -83,12 +94,18 @@ function Login() {
             })}
           />
           <p className="text-red-400"> {errors.password?.message}</p>
-          <button
-            type="submit"
-            className="my-2 px-[16px] text-white font-bold bg-[#0866ff] w-[330px] h-[40px] rounded-[5px] focus:outline-none"
-          >
-            Login
-          </button>
+          {isSubmitting ? (
+            <p className="flex items-center justify-center my-2 px-[16px] text-white font-bold bg-[#0866ff] w-[330px] h-[40px] rounded-[5px]">
+              Loading...
+            </p>
+          ) : (
+            <button
+              type="submit"
+              className="my-2 px-[16px] text-white font-bold bg-[#0866ff] w-[330px] h-[40px] rounded-[5px] focus:outline-none"
+            >
+              Login
+            </button>
+          )}
           <Link
             href={`/register`}
             className="flex items-center justify-center my-2 text-white font-bold bg-[#42b72a] w-[330px] h-[40px] rounded-[5px] focus:outline-none"

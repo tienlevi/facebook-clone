@@ -11,9 +11,11 @@ import { deleteImageCloundinary, UploadCloundinary } from "@/utils/cloudinary";
 import Loading from "@/components/Loading/Loading";
 import useAuth from "@/hooks/useAuth";
 import { Post } from "@/interface";
+import { useRouter } from "next/navigation";
 
 function Home() {
-  const { user } = useAuth();
+  const { user, status, isLoadingUser } = useAuth();
+  const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -26,6 +28,12 @@ function Home() {
     };
     getData();
   }, []);
+
+  useEffect(() => {
+    if (status === 403 || status === 401 || status === 400) {
+      router.push("/login");
+    }
+  }, [status]);
 
   const handlePost = useCallback(
     async (data: any) => {
@@ -92,6 +100,8 @@ function Home() {
     },
     [posts]
   );
+
+  if (isLoadingUser) return <Loading />;
 
   return (
     <>

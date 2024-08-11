@@ -1,10 +1,13 @@
 "use client";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import axios from "axios";
 import { baseServer } from "@/constant";
 import useAuth from "@/hooks/useAuth";
+import Loading from "@/components/Loading/Loading";
 
 interface Inputs {
   name: string;
@@ -15,9 +18,8 @@ interface Inputs {
 }
 
 function Register() {
-  const { user } = useAuth();
-  console.log(user);
-
+  const { status, isLoadingUser } = useAuth();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -25,6 +27,19 @@ function Register() {
     watch,
     setError,
   } = useForm<Inputs>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (status === 200) {
+      router.push("/");
+    }
+  }, [status, isLoadingUser]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+  }, []);
 
   const onSubmit = async (data: any) => {
     try {
@@ -37,6 +52,9 @@ function Register() {
       }
     }
   };
+
+  if (isLoading) return <Loading />;
+  if (status === 200) return <Loading />;
   return (
     <>
       <div className="absolute mt-[100px] left-1/2 translate-x-[-50%]">

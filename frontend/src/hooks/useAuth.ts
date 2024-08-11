@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { User } from "@/interface";
@@ -8,7 +7,8 @@ import { baseServer } from "@/constant";
 
 function useAuth() {
   const [user, setUser] = useState<User | null>(null);
-  const router = useRouter();
+  const [status, setStatus] = useState<number>(0);
+  const [isLoadingUser, setIsLoadingUser] = useState<boolean>(false);
   const axiosJWT = axios.create();
   const refreshToken = useToken();
 
@@ -16,12 +16,16 @@ function useAuth() {
     const accessToken = localStorage?.getItem("AccessToken");
     (async () => {
       try {
-        const { data } = await axiosJWT.get(`${baseServer}/api/auth`, {
+        setIsLoadingUser(true);
+        const response = await axiosJWT.get(`${baseServer}/api/auth`, {
           headers: { Authorization: `Bearer ${accessToken}` },
           withCredentials: true,
         });
-        setUser(data.user);
-      } catch (error) {
+        setStatus(response.status);
+        setUser(response.data.user);
+        setIsLoadingUser(false);
+      } catch (error: any) {
+        setStatus(error.response.status);
         console.log(error);
       }
     })();
@@ -63,7 +67,7 @@ function useAuth() {
     };
   }, []);
 
-  return { user, setUser };
+  return { user, setUser, status, isLoadingUser };
 }
 
 export default useAuth;
