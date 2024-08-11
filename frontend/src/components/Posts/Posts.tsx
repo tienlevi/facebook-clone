@@ -1,10 +1,12 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Post } from "@/interface";
-import { IoEllipsisHorizontal } from "react-icons/io5";
 import useAuth from "@/hooks/useAuth";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import usePreview from "@/hooks/usePreview";
+import { IoEllipsisHorizontal } from "react-icons/io5";
+import { AiFillLike, AiOutlineLike } from "react-icons/ai";
+import { FaRegComment } from "react-icons/fa";
 
 interface Props {
   posts: Post[];
@@ -187,6 +189,18 @@ function Posts({ posts, editPost, deletePost, isLoading, fileRef }: Props) {
                   />
                 </video>
               )}
+            </div>
+            <div className="border-t border-[#c9c2c2] my-2">
+              <div className="flex items-center justify-center my-3">
+                <div className="flex items-center py-2 px-4 mx-5 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer">
+                  <AiOutlineLike style={{ fontSize: 25 }} />
+                  <p className="ml-2">Like</p>
+                </div>
+                <div className="flex items-center py-2 px-4 mx-5 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer">
+                  <FaRegComment style={{ fontSize: 25 }} />
+                  <p className="ml-2">Comment</p>
+                </div>
+              </div>
             </div>
           </div>
         )
