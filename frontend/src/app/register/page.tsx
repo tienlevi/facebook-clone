@@ -4,10 +4,9 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Link from "next/link";
-import axios from "axios";
-import { baseServer } from "@/constant";
 import useAuth from "@/hooks/useAuth";
 import Loading from "@/components/Loading/Loading";
+import { registerUser } from "@/services/auth";
 
 interface Inputs {
   name: string;
@@ -23,7 +22,7 @@ function Register() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     watch,
     setError,
   } = useForm<Inputs>();
@@ -43,7 +42,7 @@ function Register() {
 
   const onSubmit = async (data: any) => {
     try {
-      const respose = await axios.post(`${baseServer}/api/register`, data);
+      const respose = await registerUser(data);
       toast.success("Register success");
       return respose.data;
     } catch (error: any) {
@@ -121,12 +120,18 @@ function Register() {
             })}
           />
           <p className="text-red-400">{errors.confirmPassword?.message}</p>
-          <button
-            type="submit"
-            className="my-2 px-[16px] text-white font-bold bg-[#0866ff] w-[330px] h-[40px] rounded-[5px] focus:outline-none"
-          >
-            Register
-          </button>
+          {isSubmitting ? (
+            <p className="flex items-center justify-center my-2 px-[16px] text-white font-bold bg-[#0866ff] w-[330px] h-[40px] rounded-[5px]">
+              Loading...
+            </p>
+          ) : (
+            <button
+              type="submit"
+              className="my-2 px-[16px] text-white font-bold bg-[#0866ff] w-[330px] h-[40px] rounded-[5px] focus:outline-none"
+            >
+              Register
+            </button>
+          )}
           <Link
             href={`/login`}
             className="flex items-center justify-center my-2 text-white font-bold bg-[#42b72a] w-[330px] h-[40px] rounded-[5px] focus:outline-none"

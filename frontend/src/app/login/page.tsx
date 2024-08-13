@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import useAuth from "@/hooks/useAuth";
 import { baseServer } from "@/constant";
 import Loading from "@/components/Loading/Loading";
+import { loginUser } from "@/services/auth";
 
 interface Inputs {
   email: string;
@@ -39,12 +40,12 @@ function Login() {
 
   const onSubmit = async (data: any) => {
     try {
-      const response = await axios.post(`${baseServer}/api/login`, data);
+      const response = await loginUser(data);
       router.push("/", { scroll: false });
       toast.success("Login success");
-      localStorage.setItem("AccessToken", response.data?.accessToken);
-      localStorage.setItem("RefreshToken", response.data?.refreshToken);
-      return response.data;
+      localStorage.setItem("AccessToken", response?.accessToken);
+      localStorage.setItem("RefreshToken", response?.refreshToken);
+      return response;
     } catch (error: any) {
       if (error?.response.status === 401) {
         setError("email", { message: "Email already exist" });
