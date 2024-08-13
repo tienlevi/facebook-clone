@@ -7,6 +7,7 @@ import {
   deletePost,
   editPost,
   getAllPosts,
+  likePost,
 } from "../controllers/posts.js";
 
 const router = Router();
@@ -21,5 +22,6 @@ router.get("/posts", getAllPosts);
 router.post("/posts", addPost);
 router.delete("/posts/:id", deletePost);
 router.put("/posts/:id", editPost);
+router.put("/posts/like/:id", likePost);
 
 export default router;

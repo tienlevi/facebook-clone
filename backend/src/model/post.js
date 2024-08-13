@@ -1,5 +1,15 @@
 import mongoose from "mongoose";
 
+const userLikePost = new mongoose.Schema({
+  userIdLike: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Users",
+    require: true,
+  },
+  name: { type: String, require: true },
+  avatar: { type: String, require: true },
+});
+
 const Post = new mongoose.Schema(
   {
     userId: {
@@ -9,6 +19,10 @@ const Post = new mongoose.Schema(
     userInfo: {
       name: { type: String, require: true },
       avatar: { type: String },
+    },
+    like: {
+      count: { type: Number, default: 0 },
+      users: [userLikePost],
     },
     publicId: { type: String },
     title: { type: String, require: true },
