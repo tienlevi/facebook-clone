@@ -10,13 +10,13 @@ import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
 import { deletePost, editPost } from "@/services/post";
 import { deleteImageCloundinary, UploadCloundinary } from "@/utils/cloudinary";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Props {
   posts: Post[];
-  setPosts: (value: any) => void;
 }
 
-function Posts({ posts, setPosts }: Props) {
+function Posts({ posts }: Props) {
   const { user } = useAuth();
   const {
     handleSubmit,
@@ -24,9 +24,9 @@ function Posts({ posts, setPosts }: Props) {
     reset,
     formState: { errors, isSubmitting },
   } = useForm();
+  const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const [isLiked, setIsLiked] = useState();
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [togglePost, setTogglePost] = useState<string | null>(null);
   const [selectPost, setSelectPost] = useState<null>(null);
@@ -42,33 +42,31 @@ function Posts({ posts, setPosts }: Props) {
     return 0;
   });
 
-  console.log(
-    posts[0].like.users.some((item) => item.userIdLike === user?._id)
-  );
-
   const handleTogglePost = (id: string) => {
     setTogglePost(togglePost === id ? null : id);
   };
 
-  const handleDelete = async (id: string, publicId: string) => {
-    if (confirm("Are you sure want to delete ?")) {
-      (await deletePost(id)) && (await deleteImageCloundinary(publicId));
-      setPosts(posts.filter((item: any) => item._id !== id));
+  const { mutate: handleDelete } = useMutation({
+    mutationKey: ["posts"],
+    mutationFn: async (data: any) => {
+      if (confirm("Are you sure want to delete ?")) {
+        (await deletePost(data.id)) &&
+          (await deleteImageCloundinary(data.publicId));
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
       toast.success("Delete success");
-    }
-  };
+    },
+  });
 
-  const handleEdit = async (data: any) => {
-    if (limitSizeMB > 50) {
-      return toast.warning("Please select a file less than 50MB");
-    }
-    try {
-      setIsLoading(true);
+  const { mutate } = useMutation({
+    mutationKey: ["posts"],
+    mutationFn: async (data: any) => {
       const fileCloudinary = await UploadCloundinary(
         fileRef.current?.files?.[0] ?? ""
       );
-      toast.success("Edit success");
-      const response = await editPost({
+      await editPost({
         ...data,
         userId: user?._id,
         userInfo: { name: user?.name, avatar: user?.avatar },
@@ -76,12 +74,21 @@ function Posts({ posts, setPosts }: Props) {
         fileSrc: fileCloudinary?.secure_url || "",
         fileType: fileType,
       });
-      setPosts(posts.map((item) => (item?._id === data._id ? response : item)));
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      toast.success("Post success");
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
+  const handleEdit = async (data: any) => {
+    if (limitSizeMB > 50) {
+      return toast.warning("Please select a file less than 50MB");
     }
+    mutate(data);
   };
 
   const likePost = async (idPost: string) => {
@@ -111,7 +118,7 @@ function Posts({ posts, setPosts }: Props) {
               </p>
             </div>
             <div className="my-5">
-              {fileType === "image" && <img src={file as any} alt="" />}
+              {fileType === "image" && <img src={file!} alt="" />}
               {fileType === "video" && (
                 <video controls className="w-full">
                   <source
@@ -180,7 +187,9 @@ function Posts({ posts, setPosts }: Props) {
                 </p>
                 <p
                   className="px-5 py-2 rounded-[10px] hover:bg-[rgb(234,235,236)]"
-                  onClick={() => handleDelete(item._id!, item.publicId!)}
+                  onClick={() =>
+                    handleDelete({ id: item._id!, publicId: item.publicId })
+                  }
                 >
                   Delete Post
                 </p>

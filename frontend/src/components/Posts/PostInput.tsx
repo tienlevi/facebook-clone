@@ -7,16 +7,16 @@ import { Post } from "@/interface";
 import { toast } from "react-toastify";
 import { UploadCloundinary } from "@/utils/cloudinary";
 import { addPost } from "@/services/post";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Props {
   posts: Post[];
-  setPosts: (value: any) => void;
 }
 
-function PostInput({ posts, setPosts }: Props) {
+function PostInput({ posts }: Props) {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const {
     register,
@@ -25,30 +25,36 @@ function PostInput({ posts, setPosts }: Props) {
   } = useForm();
   const { file, fileType, handleChangeFile } = usePreview();
   const limitSizeMB = (fileRef.current?.files?.[0]?.size as number) / 1024 ** 2;
-
-  const handlePost = async (data: any) => {
-    if (limitSizeMB > 50) {
-      return toast.warning("Please select a file less than 50MB");
-    }
-    try {
-      setIsLoading(true);
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["posts"],
+    mutationFn: async (data: any) => {
       const fileCloudinary = await UploadCloundinary(
         fileRef.current?.files?.[0] ?? ""
       );
-      toast.success("Post success");
-      const response = await addPost({
+
+      return await addPost({
         ...data,
         userId: user?._id,
         userInfo: { name: user?.name, avatar: user?.avatar },
         publicId: fileCloudinary?.public_id || "",
         fileSrc: fileCloudinary?.secure_url || "",
+        fileType: fileType,
       });
-      setPosts([...posts, response] as any);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      toast.success("Post success");
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
+  const handlePost = (data: any) => {
+    if (limitSizeMB > 50) {
+      return toast.warning("Please select a file less than 50MB");
     }
+    mutate(data);
   };
 
   return (
@@ -96,7 +102,7 @@ function PostInput({ posts, setPosts }: Props) {
             Photo / Video
           </p>
         </div>
-        {isLoading ? (
+        {isPending ? (
           <p className="bg-blue-500 w-[100px] text-white py-2 flex items-center justify-center mt-4 rounded-[10px] cursor-pointer">
             Loading...
           </p>

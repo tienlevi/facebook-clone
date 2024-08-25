@@ -7,6 +7,7 @@ import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
 import Loading from "@/components/Loading/Loading";
 import { registerUser } from "@/services/auth";
+import { useMutation } from "@tanstack/react-query";
 
 interface Inputs {
   name: string;
@@ -40,16 +41,22 @@ function Register() {
     }, 3000);
   }, []);
 
-  const onSubmit = async (data: any) => {
-    try {
-      const respose = await registerUser(data);
-      toast.success("Register success");
-      return respose.data;
-    } catch (error: any) {
-      if (error?.response.status === 401) {
-        setError("email", { message: "Email already exist" });
+  const { mutate } = useMutation({
+    mutationKey: ["users"],
+    mutationFn: async (data: any) => {
+      try {
+        await registerUser(data);
+        toast.success("Register success");
+      } catch (error: any) {
+        if (error?.response.status === 401) {
+          setError("email", { message: "Email already exist" });
+        }
       }
-    }
+    },
+  });
+
+  const onSubmit = async (data: any) => {
+    mutate(data);
   };
 
   if (isLoading) return <Loading />;

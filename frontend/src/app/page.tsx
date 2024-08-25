@@ -9,11 +9,19 @@ import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { getPosts } from "@/services/post";
 import Loading from "@/components/Loading/Loading";
 import useAuth from "@/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
 
 function Home() {
   const { user, status, isLoadingUser } = useAuth();
+  const { data, isLoading } = useQuery({
+    queryKey: ["posts"],
+    queryFn: async () => {
+      const response = await getPosts();
+      return response;
+    },
+  });
+  console.log(data);
 
-  const [posts, setPosts] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -21,14 +29,6 @@ function Home() {
       router.push("/login");
     }
   }, [status]);
-
-  useEffect(() => {
-    const getData = async () => {
-      const response: any = await getPosts();
-      setPosts(response);
-    };
-    getData();
-  }, []);
 
   if (isLoadingUser) return <Loading />;
 
@@ -39,12 +39,8 @@ function Home() {
         <div className="flex">
           <Sidebar />
           <div className="w-1/2 mx-2">
-            <PostInput posts={posts} setPosts={setPosts} />
-            {posts.length === 0 ? (
-              <Loading />
-            ) : (
-              <Posts posts={posts} setPosts={setPosts} />
-            )}
+            <PostInput posts={data} />
+            {isLoading ? <Loading /> : <Posts posts={data} />}
           </div>
           <Contact />
         </div>
