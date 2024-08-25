@@ -20,7 +20,7 @@ function Home() {
       return response;
     },
   });
-  console.log(data);
+  // console.log(data);
 
   const router = useRouter();
 

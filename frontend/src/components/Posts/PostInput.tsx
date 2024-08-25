@@ -41,9 +41,13 @@ function PostInput({ posts }: Props) {
         fileType: fileType,
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-      toast.success("Post success");
+    onSuccess: (data) => {
+      if (data) {
+        queryClient.invalidateQueries({ queryKey: ["posts"] });
+        toast.success("Post success");
+      } else {
+        toast.error("Post failed");
+      }
     },
     onError: (err) => {
       toast.error(err.message);

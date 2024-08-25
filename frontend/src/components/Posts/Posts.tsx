@@ -1,4 +1,4 @@
-import { use, useRef, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Post } from "@/interface";
 import useAuth from "@/hooks/useAuth";
 import Image from "next/image";
@@ -8,7 +8,7 @@ import usePreview from "@/hooks/usePreview";
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
-import { deletePost, editPost } from "@/services/post";
+import { deletePost, editPost, likePost } from "@/services/post";
 import { deleteImageCloundinary, UploadCloundinary } from "@/utils/cloudinary";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -27,7 +27,6 @@ function Posts({ posts }: Props) {
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const [isLiked, setIsLiked] = useState();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [togglePost, setTogglePost] = useState<string | null>(null);
   const [selectPost, setSelectPost] = useState<null>(null);
   const { file, fileType, handleChangeFile } = usePreview();
@@ -41,6 +40,10 @@ function Posts({ posts }: Props) {
     }
     return 0;
   });
+
+  useEffect(() => {
+    setIsLiked(user?._id as any);
+  }, []);
 
   const handleTogglePost = (id: string) => {
     setTogglePost(togglePost === id ? null : id);
@@ -60,13 +63,13 @@ function Posts({ posts }: Props) {
     },
   });
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationKey: ["posts"],
     mutationFn: async (data: any) => {
       const fileCloudinary = await UploadCloundinary(
         fileRef.current?.files?.[0] ?? ""
       );
-      await editPost({
+      return await editPost({
         ...data,
         userId: user?._id,
         userInfo: { name: user?.name, avatar: user?.avatar },
@@ -75,12 +78,27 @@ function Posts({ posts }: Props) {
         fileType: fileType,
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-      toast.success("Post success");
+    onSuccess: (data: any) => {
+      if (data) {
+        queryClient.invalidateQueries({ queryKey: ["posts"] });
+        toast.success("Post success");
+        setSelectPost(null);
+      } else {
+        toast.error("Post failed");
+        setSelectPost(null);
+      }
     },
     onError: (err) => {
       toast.error(err.message);
+    },
+  });
+
+  const { mutate: handleLikePost } = useMutation({
+    mutationKey: ["posts"],
+    mutationFn: async (data: any) => {
+      console.log(data);
+
+      await likePost(data._id, data);
     },
   });
 
@@ -89,13 +107,6 @@ function Posts({ posts }: Props) {
       return toast.warning("Please select a file less than 50MB");
     }
     mutate(data);
-  };
-
-  const likePost = async (idPost: string) => {
-    try {
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   return (
@@ -147,7 +158,7 @@ function Posts({ posts }: Props) {
               <input type="file" ref={fileRef} onChange={handleChangeFile} />
             </div>
             <div className="flex justify-between">
-              {isLoading ? (
+              {isPending ? (
                 <p className="bg-blue-500 w-[100px] text-white py-2 flex items-center justify-center mt-4 rounded-[10px] cursor-pointer">
                   Loading...
                 </p>
@@ -253,7 +264,7 @@ function Posts({ posts }: Props) {
               <div className="flex items-center justify-center my-3">
                 <div className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer">
                   {item.like.users.some(
-                    (item) => item.userIdLike !== user?._id
+                    (item) => item.userIdLike !== isLiked
                   ) ? (
                     <>
                       <AiFillLike style={{ fontSize: 25 }} />
