@@ -1,22 +1,22 @@
-import { useState } from "react";
+import { use, useRef, useState } from "react";
 import { Post } from "@/interface";
 import useAuth from "@/hooks/useAuth";
 import Image from "next/image";
+import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import usePreview from "@/hooks/usePreview";
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
+import { deletePost, editPost } from "@/services/post";
+import { deleteImageCloundinary, UploadCloundinary } from "@/utils/cloudinary";
 
 interface Props {
   posts: Post[];
-  editPost: (data: any) => void;
-  deletePost: (id: string, publicId: string) => void;
-  isLoading: boolean;
-  fileRef: any;
+  setPosts: (value: any) => void;
 }
 
-function Posts({ posts, editPost, deletePost, isLoading, fileRef }: Props) {
+function Posts({ posts, setPosts }: Props) {
   const { user } = useAuth();
   const {
     handleSubmit,
@@ -24,9 +24,14 @@ function Posts({ posts, editPost, deletePost, isLoading, fileRef }: Props) {
     reset,
     formState: { errors, isSubmitting },
   } = useForm();
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [isLiked, setIsLiked] = useState();
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [togglePost, setTogglePost] = useState<string | null>(null);
   const [selectPost, setSelectPost] = useState<null>(null);
   const { file, fileType, handleChangeFile } = usePreview();
+  const limitSizeMB = (fileRef.current?.files?.[0]?.size as number) / 1024 ** 2;
   const sortPosts = posts.sort((a, b) => {
     if (user?._id === a.userId) {
       return -1;
@@ -37,12 +42,53 @@ function Posts({ posts, editPost, deletePost, isLoading, fileRef }: Props) {
     return 0;
   });
 
+  console.log(
+    posts[0].like.users.some((item) => item.userIdLike === user?._id)
+  );
+
   const handleTogglePost = (id: string) => {
     setTogglePost(togglePost === id ? null : id);
   };
 
-  const onSubmit = async (data: any) => {
-    editPost({ ...data, fileType: fileType });
+  const handleDelete = async (id: string, publicId: string) => {
+    if (confirm("Are you sure want to delete ?")) {
+      (await deletePost(id)) && (await deleteImageCloundinary(publicId));
+      setPosts(posts.filter((item: any) => item._id !== id));
+      toast.success("Delete success");
+    }
+  };
+
+  const handleEdit = async (data: any) => {
+    if (limitSizeMB > 50) {
+      return toast.warning("Please select a file less than 50MB");
+    }
+    try {
+      setIsLoading(true);
+      const fileCloudinary = await UploadCloundinary(
+        fileRef.current?.files?.[0] ?? ""
+      );
+      toast.success("Edit success");
+      const response = await editPost({
+        ...data,
+        userId: user?._id,
+        userInfo: { name: user?.name, avatar: user?.avatar },
+        publicId: fileCloudinary?.public_id || "",
+        fileSrc: fileCloudinary?.secure_url || "",
+        fileType: fileType,
+      });
+      setPosts(posts.map((item) => (item?._id === data._id ? response : item)));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const likePost = async (idPost: string) => {
+    try {
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -51,7 +97,7 @@ function Posts({ posts, editPost, deletePost, isLoading, fileRef }: Props) {
         selectPost === item._id ? (
           <form
             key={index}
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(handleEdit)}
             className="block bg-white rounded-[8px] p-4 shadow-[0_1px_2px_0_rgba(0,0,0,0.2)]"
           >
             <div className="flex pb-4 border-b border-[rgb(228,230,235)]">
@@ -134,7 +180,7 @@ function Posts({ posts, editPost, deletePost, isLoading, fileRef }: Props) {
                 </p>
                 <p
                   className="px-5 py-2 rounded-[10px] hover:bg-[rgb(234,235,236)]"
-                  onClick={() => deletePost(item._id!, item.publicId)}
+                  onClick={() => handleDelete(item._id!, item.publicId!)}
                 >
                   Delete Post
                 </p>
@@ -190,13 +236,29 @@ function Posts({ posts, editPost, deletePost, isLoading, fileRef }: Props) {
                 </video>
               )}
             </div>
+            <div className="flex items-center">
+              <AiFillLike style={{ fontSize: 20 }} />
+              <p className="ml-2">{item.like.count} Likes</p>
+            </div>
             <div className="border-t border-[#c9c2c2] my-2">
               <div className="flex items-center justify-center my-3">
-                <div className="flex items-center py-2 px-4 mx-5 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer">
-                  <AiOutlineLike style={{ fontSize: 25 }} />
-                  <p className="ml-2">Like</p>
+                <div className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer">
+                  {item.like.users.some(
+                    (item) => item.userIdLike !== user?._id
+                  ) ? (
+                    <>
+                      <AiFillLike style={{ fontSize: 25 }} />
+                      <p className="ml-2">Liked</p>
+                    </>
+                  ) : (
+                    <>
+                      {" "}
+                      <AiOutlineLike style={{ fontSize: 25 }} />
+                      <p className="ml-2">Like</p>
+                    </>
+                  )}
                 </div>
-                <div className="flex items-center py-2 px-4 mx-5 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer">
+                <div className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer">
                   <FaRegComment style={{ fontSize: 25 }} />
                   <p className="ml-2">Comment</p>
                 </div>

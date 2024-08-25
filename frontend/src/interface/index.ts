@@ -21,4 +21,8 @@ export interface Post {
   fileType: string;
   createdAt: string;
   updatedAt: string;
+  like: {
+    count: number;
+    users: [{ userIdLike: string; name: string; avatar: string }];
+  };
 }
