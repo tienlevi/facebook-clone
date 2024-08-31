@@ -1,22 +1,19 @@
 import { useState, useEffect, useRef } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 import { Post } from "@/interface";
 import useAuth from "@/hooks/useAuth";
 import Image from "next/image";
-import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import usePreview from "@/hooks/usePreview";
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
-import { deletePost, editPost, likePost } from "@/services/post";
+import { deletePost, editPost, getPosts, likePost } from "@/services/post";
 import { deleteImageCloundinary, UploadCloundinary } from "@/utils/cloudinary";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Loading from "../Loading/Loading";
 
-interface Props {
-  posts: Post[];
-}
-
-function Posts({ posts }: Props) {
+function Posts() {
   const { user } = useAuth();
   const {
     handleSubmit,
@@ -24,14 +21,21 @@ function Posts({ posts }: Props) {
     reset,
     formState: { errors, isSubmitting },
   } = useForm();
+  const { data, isLoading } = useQuery<Post[]>({
+    queryKey: ["posts"],
+    queryFn: async () => {
+      const response = await getPosts();
+      return response;
+    },
+  });
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
-  const [isLiked, setIsLiked] = useState();
+  // const [isLiked, setIsLiked] = useState(null);
   const [togglePost, setTogglePost] = useState<string | null>(null);
   const [selectPost, setSelectPost] = useState<null>(null);
   const { file, fileType, handleChangeFile } = usePreview();
   const limitSizeMB = (fileRef.current?.files?.[0]?.size as number) / 1024 ** 2;
-  const sortPosts = posts.sort((a, b) => {
+  const sortPosts = data?.sort((a, b) => {
     if (user?._id === a.userId) {
       return -1;
     }
@@ -41,9 +45,9 @@ function Posts({ posts }: Props) {
     return 0;
   });
 
-  useEffect(() => {
-    setIsLiked(user?._id as any);
-  }, []);
+  // useEffect(() => {
+  //   setIsLiked(user?._id as any);
+  // }, []);
 
   const handleTogglePost = (id: string) => {
     setTogglePost(togglePost === id ? null : id);
@@ -65,7 +69,7 @@ function Posts({ posts }: Props) {
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["posts"],
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: Post) => {
       const fileCloudinary = await UploadCloundinary(
         fileRef.current?.files?.[0] ?? ""
       );
@@ -96,9 +100,16 @@ function Posts({ posts }: Props) {
   const { mutate: handleLikePost } = useMutation({
     mutationKey: ["posts"],
     mutationFn: async (data: any) => {
-      console.log(data);
+      data.like.count += 1;
+      if (!data.like.users.some((userId: any) => userId.userId === user?._id)) {
+        data.like.users.push({
+          userIdLike: user?._id,
+          name: user?.name,
+          avatar: user?.avatar,
+        });
+      }
 
-      await likePost(data._id, data);
+      return await likePost(data._id!, user?._id!, data);
     },
   });
 
@@ -108,6 +119,8 @@ function Posts({ posts }: Props) {
     }
     mutate(data);
   };
+
+  if (isLoading) return <Loading />;
 
   return (
     <div className="relative block mt-2">
@@ -262,22 +275,22 @@ function Posts({ posts }: Props) {
             </div>
             <div className="border-t border-[#c9c2c2] my-2">
               <div className="flex items-center justify-center my-3">
-                <div className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer">
-                  {item.like.users.some(
-                    (item) => item.userIdLike !== isLiked
-                  ) ? (
-                    <>
-                      <AiFillLike style={{ fontSize: 25 }} />
-                      <p className="ml-2">Liked</p>
-                    </>
-                  ) : (
-                    <>
-                      {" "}
-                      <AiOutlineLike style={{ fontSize: 25 }} />
-                      <p className="ml-2">Like</p>
-                    </>
-                  )}
-                </div>
+                {item.like.users.some(
+                  (item) => item.userIdLike === user?._id
+                ) ? (
+                  <div className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer">
+                    <AiFillLike style={{ fontSize: 25 }} />
+                    <p className="ml-2">Liked</p>
+                  </div>
+                ) : (
+                  <div
+                    className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer"
+                    onClick={() => handleLikePost(item)}
+                  >
+                    <AiOutlineLike style={{ fontSize: 25 }} />
+                    <p className="ml-2">Like</p>
+                  </div>
+                )}
                 <div className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer">
                   <FaRegComment style={{ fontSize: 25 }} />
                   <p className="ml-2">Comment</p>

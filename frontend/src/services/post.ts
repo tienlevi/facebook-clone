@@ -35,3 +35,19 @@ export const editPost = async (data: any) => {
     console.log(error);
   }
 };
+
+export const likePost = async (
+  idPost: string,
+  userIdLike: string,
+  data: any
+) => {
+  try {
+    const response = await baseUrl.put(
+      `/posts/${userIdLike}/like/${idPost}`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

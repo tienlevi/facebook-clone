@@ -22,6 +22,6 @@ router.get("/posts", getAllPosts);
 router.post("/posts", addPost);
 router.delete("/posts/:id", deletePost);
 router.put("/posts/:id", editPost);
-router.put("/posts/like/:id", likePost);
+router.put("/posts/:userIdLike/like/:id", likePost);
 
 export default router;

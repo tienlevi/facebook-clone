@@ -9,11 +9,7 @@ import { UploadCloundinary } from "@/utils/cloudinary";
 import { addPost } from "@/services/post";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-interface Props {
-  posts: Post[];
-}
-
-function PostInput({ posts }: Props) {
+function PostInput() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -27,7 +23,7 @@ function PostInput({ posts }: Props) {
   const limitSizeMB = (fileRef.current?.files?.[0]?.size as number) / 1024 ** 2;
   const { mutate, isPending } = useMutation({
     mutationKey: ["posts"],
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: Post) => {
       const fileCloudinary = await UploadCloundinary(
         fileRef.current?.files?.[0] ?? ""
       );

@@ -1,4 +1,5 @@
 import PostSchema from "../model/post.js";
+import UserSchema from "../model/user.js";
 
 export const getAllPosts = async (req, res) => {
   try {
@@ -41,25 +42,25 @@ export const editPost = async (req, res) => {
 };
 
 export const likePost = async (req, res) => {
-  const {
-    like: { name, avatar, userIdLike },
-  } = req.body;
-
   try {
+    const user = await UserSchema.findById({ _id: req.params.userIdLike });
     const data = await PostSchema.findOne({ _id: req.params.id });
     const userLiked = data.like.users.some(
-      (item) => item.userIdLike == userIdLike
+      (item) => item.userIdLike == req.params.userIdLike
     );
+    console.log(userLiked);
+
     if (userLiked) {
       return res.status(402).json({ message: "You are liked this post" });
     } else {
       data.like.count += 1;
       data.like.users.push({
-        userIdLike: userIdLike,
-        name: name,
-        avatar: avatar,
+        userIdLike: req.params.userIdLike,
+        name: user.name,
+        avatar: user.avatar,
       });
     }
+
     await data.save();
     return res.status(200).json(data);
   } catch (error) {

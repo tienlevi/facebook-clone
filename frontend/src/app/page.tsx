@@ -1,26 +1,16 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Contact from "@/components/Contact/Contact";
 import Header from "@/components/Header/Header";
 import PostInput from "@/components/Posts/PostInput";
 import Posts from "@/components/Posts/Posts";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
-import { getPosts } from "@/services/post";
 import Loading from "@/components/Loading/Loading";
 import useAuth from "@/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
 
 function Home() {
-  const { user, status, isLoadingUser } = useAuth();
-  const { data, isLoading } = useQuery({
-    queryKey: ["posts"],
-    queryFn: async () => {
-      const response = await getPosts();
-      return response;
-    },
-  });
-  // console.log(data);
+  const { status, isLoadingUser } = useAuth();
 
   const router = useRouter();
 
@@ -39,8 +29,8 @@ function Home() {
         <div className="flex">
           <Sidebar />
           <div className="w-1/2 mx-2">
-            <PostInput posts={data} />
-            {isLoading ? <Loading /> : <Posts posts={data} />}
+            <PostInput />
+            <Posts />
           </div>
           <Contact />
         </div>
