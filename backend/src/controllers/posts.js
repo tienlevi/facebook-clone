@@ -48,7 +48,6 @@ export const likePost = async (req, res) => {
     const userLiked = data.like.users.some(
       (item) => item.userIdLike == req.params.userIdLike
     );
-    console.log(userLiked);
 
     if (userLiked) {
       return res.status(402).json({ message: "You are liked this post" });
@@ -62,6 +61,30 @@ export const likePost = async (req, res) => {
     }
 
     await data.save();
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const unlikePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const userIdLike = req.params.userIdLike;
+    const data = await PostSchema.findOne({ _id: postId });
+    const userLiked = data.like.users.some(
+      (item) => item.userIdLike.toString() === userIdLike
+    );
+    if (!userLiked) {
+      return res.status(402).json({ message: "You have not liked this post" });
+    }
+    data.like.count -= 1;
+    data.like.users = data.like.users.filter(
+      (item) => item.userIdLike.toString() !== userIdLike
+    );
+
+    await data.save();
+
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);

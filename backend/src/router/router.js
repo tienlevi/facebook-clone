@@ -8,6 +8,7 @@ import {
   editPost,
   getAllPosts,
   likePost,
+  unlikePost,
 } from "../controllers/posts.js";
 
 const router = Router();
@@ -23,5 +24,6 @@ router.post("/posts", addPost);
 router.delete("/posts/:id", deletePost);
 router.put("/posts/:id", editPost);
 router.put("/posts/:userIdLike/like/:id", likePost);
+router.put("/posts/:userIdLike/unlike/:id", unlikePost);
 
 export default router;

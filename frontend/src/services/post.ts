@@ -51,3 +51,18 @@ export const likePost = async (
     console.log(error);
   }
 };
+export const unlikePost = async (
+  idPost: string,
+  userIdLike: string,
+  data: any
+) => {
+  try {
+    const response = await baseUrl.put(
+      `/posts/${userIdLike}/unlike/${idPost}`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

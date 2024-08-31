@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { Post } from "@/interface";
@@ -7,11 +7,18 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 import usePreview from "@/hooks/usePreview";
 import { IoEllipsisHorizontal } from "react-icons/io5";
-import { AiFillLike, AiOutlineLike } from "react-icons/ai";
+import { AiFillLike } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
-import { deletePost, editPost, getPosts, likePost } from "@/services/post";
+import {
+  deletePost,
+  editPost,
+  getPosts,
+  likePost,
+  unlikePost,
+} from "@/services/post";
 import { deleteImageCloundinary, UploadCloundinary } from "@/utils/cloudinary";
 import Loading from "../Loading/Loading";
+import LikePost from "./LikePost";
 
 function Posts() {
   const { user } = useAuth();
@@ -30,7 +37,6 @@ function Posts() {
   });
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
-  // const [isLiked, setIsLiked] = useState(null);
   const [togglePost, setTogglePost] = useState<string | null>(null);
   const [selectPost, setSelectPost] = useState<null>(null);
   const { file, fileType, handleChangeFile } = usePreview();
@@ -44,10 +50,6 @@ function Posts() {
     }
     return 0;
   });
-
-  // useEffect(() => {
-  //   setIsLiked(user?._id as any);
-  // }, []);
 
   const handleTogglePost = (id: string) => {
     setTogglePost(togglePost === id ? null : id);
@@ -101,15 +103,25 @@ function Posts() {
     mutationKey: ["posts"],
     mutationFn: async (data: any) => {
       data.like.count += 1;
-      if (!data.like.users.some((userId: any) => userId.userId === user?._id)) {
-        data.like.users.push({
-          userIdLike: user?._id,
-          name: user?.name,
-          avatar: user?.avatar,
-        });
-      }
+      data.like.users.push({
+        userIdLike: user?._id,
+        name: user?.name,
+        avatar: user?.avatar,
+      });
 
       return await likePost(data._id!, user?._id!, data);
+    },
+  });
+
+  const { mutate: handleUnlikePost } = useMutation({
+    mutationKey: ["posts"],
+    mutationFn: async (data: Post) => {
+      data.like.count -= 1;
+      data.like.users.filter((item) => item.userIdLike !== user?._id);
+      return await unlikePost(data._id!, user?._id!, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
   });
 
@@ -275,22 +287,12 @@ function Posts() {
             </div>
             <div className="border-t border-[#c9c2c2] my-2">
               <div className="flex items-center justify-center my-3">
-                {item.like.users.some(
-                  (item) => item.userIdLike === user?._id
-                ) ? (
-                  <div className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer">
-                    <AiFillLike style={{ fontSize: 25 }} />
-                    <p className="ml-2">Liked</p>
-                  </div>
-                ) : (
-                  <div
-                    className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer"
-                    onClick={() => handleLikePost(item)}
-                  >
-                    <AiOutlineLike style={{ fontSize: 25 }} />
-                    <p className="ml-2">Like</p>
-                  </div>
-                )}
+                <LikePost
+                  postId={item}
+                  users={item.like.users}
+                  likePost={handleLikePost}
+                  unlikePost={handleUnlikePost}
+                />
                 <div className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer">
                   <FaRegComment style={{ fontSize: 25 }} />
                   <p className="ml-2">Comment</p>
