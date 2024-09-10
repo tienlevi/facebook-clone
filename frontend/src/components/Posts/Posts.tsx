@@ -1,5 +1,10 @@
 import { useState, useRef } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { Post } from "@/interface";
 import useAuth from "@/hooks/useAuth";
@@ -19,8 +24,14 @@ import {
 import { deleteImageCloundinary, UploadCloundinary } from "@/utils/cloudinary";
 import Loading from "../Loading/Loading";
 import LikePost from "./LikePost";
+import baseUrl from "@/config/axios";
+import SkeletonLoading from "../Loading/SkeletonLoading";
 
-function Posts() {
+interface Props {
+  loadMorePosts?: string | number;
+}
+
+function Posts({ loadMorePosts }: Props) {
   const { user } = useAuth();
   const {
     handleSubmit,
@@ -28,28 +39,25 @@ function Posts() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm();
-  const { data, isLoading } = useQuery<Post[]>({
+  const {
+    data,
+    isLoading,
+    isPending: loadPosts,
+  } = useQuery<Post[]>({
     queryKey: ["posts"],
     queryFn: async () => {
-      const response = await getPosts();
-      return response;
+      return await getPosts(loadMorePosts);
     },
   });
+
+  console.log(loadPosts);
+
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const [togglePost, setTogglePost] = useState<string | null>(null);
   const [selectPost, setSelectPost] = useState<null>(null);
   const { file, fileType, handleChangeFile } = usePreview();
   const limitSizeMB = (fileRef.current?.files?.[0]?.size as number) / 1024 ** 2;
-  const sortPosts = data?.sort((a, b) => {
-    if (user?._id === a.userId) {
-      return -1;
-    }
-    if (user?._id === b.userId) {
-      return 1;
-    }
-    return 0;
-  });
 
   const handleTogglePost = (id: string) => {
     setTogglePost(togglePost === id ? null : id);
@@ -132,11 +140,11 @@ function Posts() {
     mutate(data);
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <SkeletonLoading />;
 
   return (
     <div className="relative block mt-2">
-      {sortPosts?.map((item, index: number) =>
+      {data?.map((item, index: number) =>
         selectPost === item._id ? (
           <form
             key={index}
@@ -302,6 +310,7 @@ function Posts() {
           </div>
         )
       )}
+      {/* {isFetching && <SkeletonLoading />} */}
     </div>
   );
 }

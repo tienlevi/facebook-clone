@@ -9,9 +9,9 @@ export const addPost = async (data: any) => {
   }
 };
 
-export const getPosts = async () => {
+export const getPosts = async (limitResult?: string | number) => {
   try {
-    const response = await baseUrl.get("/posts");
+    const response = await baseUrl.get(`/posts?limit=${limitResult}`);
     return response.data;
   } catch (error) {
     console.log(error);
