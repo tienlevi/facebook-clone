@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { UploadCloundinary } from "@/utils/cloudinary";
 import { addPost } from "@/services/post";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import File from "./File";
 
 function PostInput() {
   const { user } = useAuth();
@@ -83,12 +84,7 @@ function PostInput() {
       </p>
       {open && (
         <div className="my-5">
-          {fileType === "image" && <img src={file as any} alt="" />}
-          {fileType === "video" && (
-            <video controls className="w-full">
-              <source src={file} type="video/mp4" className="object-cover" />
-            </video>
-          )}
+          <File fileType={fileType} fileSrc={file!} />
           <input type="file" ref={fileRef} onChange={handleChangeFile} />
         </div>
       )}

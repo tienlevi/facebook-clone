@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   useInfiniteQuery,
   useMutation,
@@ -26,6 +26,7 @@ import Loading from "../Loading/Loading";
 import LikePost from "./LikePost";
 import baseUrl from "@/config/axios";
 import SkeletonLoading from "../Loading/SkeletonLoading";
+import File from "./File";
 
 interface Props {
   loadMorePosts?: string | number;
@@ -39,18 +40,13 @@ function Posts({ loadMorePosts }: Props) {
     reset,
     formState: { errors, isSubmitting },
   } = useForm();
-  const {
-    data,
-    isLoading,
-    isPending: loadPosts,
-  } = useQuery<Post[]>({
+  const { data, isLoading } = useQuery<Post[]>({
     queryKey: ["posts"],
     queryFn: async () => {
-      return await getPosts(loadMorePosts);
+      const response = await getPosts(loadMorePosts);
+      return response.posts;
     },
   });
-
-  console.log(loadPosts);
 
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -162,16 +158,7 @@ function Posts({ loadMorePosts }: Props) {
               </p>
             </div>
             <div className="my-5">
-              {fileType === "image" && <img src={file!} alt="" />}
-              {fileType === "video" && (
-                <video controls className="w-full">
-                  <source
-                    src={file}
-                    type="video/mp4"
-                    className="object-cover"
-                  />
-                </video>
-              )}
+              <File fileType={fileType} fileSrc={file!} />
               {fileType === "" && item.fileType === "image" && (
                 <img
                   src={item.fileSrc}
@@ -271,24 +258,7 @@ function Posts({ loadMorePosts }: Props) {
               )}
             </div>
             <div className="text-[17px] my-2">{item.title}</div>
-            <div className="w-full">
-              {item.fileType === "image" && (
-                <img
-                  src={item.fileSrc}
-                  alt=""
-                  className="w-full object-cover"
-                />
-              )}
-              {item.fileType === "video" && (
-                <video controls className="w-full">
-                  <source
-                    src={item.fileSrc}
-                    type="video/mp4"
-                    className="object-cover"
-                  />
-                </video>
-              )}
-            </div>
+            <File fileType={item.fileType} fileSrc={item.fileSrc} />
             <div className="flex items-center">
               <AiFillLike style={{ fontSize: 20 }} />
               <p className="ml-2">{item.like.count} Likes</p>
@@ -310,7 +280,7 @@ function Posts({ loadMorePosts }: Props) {
           </div>
         )
       )}
-      {/* {isFetching && <SkeletonLoading />} */}
+      {/* {postLoaded && <SkeletonLoading />} */}
     </div>
   );
 }

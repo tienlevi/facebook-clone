@@ -13,7 +13,7 @@ function LikePost({ postId, users, likePost, unlikePost }: Props) {
 
   return (
     <>
-      {users.some((item: any) => item.userIdLike === user?._id) ? (
+      {users?.some((item: any) => item.userIdLike === user?._id) ? (
         <div
           className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer"
           onClick={() => unlikePost(postId)}
