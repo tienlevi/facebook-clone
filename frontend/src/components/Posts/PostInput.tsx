@@ -1,13 +1,13 @@
 import { useRef, useState } from "react";
 import { FaImages } from "react-icons/fa";
 import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuth from "@/hooks/useAuth";
 import usePreview from "@/hooks/usePreview";
 import { Post } from "@/interface";
 import { toast } from "react-toastify";
 import { UploadCloundinary } from "@/utils/cloudinary";
 import { addPost } from "@/services/post";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import File from "./File";
 
 function PostInput() {

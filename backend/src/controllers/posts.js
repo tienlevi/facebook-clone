@@ -3,9 +3,13 @@ import UserSchema from "../model/user.js";
 
 export const getAllPosts = async (req, res) => {
   try {
-    const limitResults = req.query.limit;
-    const data = await PostSchema.find(req.body).limit(limitResults);
-    return res.status(200).json(data);
+    const limit = parseInt(req.query.limit);
+    const page = parseInt(req.query.page);
+    console.log(page);
+    const posts = await PostSchema.find(req.body)
+      .limit(limit)
+      .skip((page - 1) * limit);
+    return res.status(200).json({ limit, page, posts });
   } catch (error) {
     console.log(error);
   }
