@@ -10,7 +10,7 @@ import { UploadCloundinary } from "@/utils/cloudinary";
 import { addPost } from "@/services/post";
 import File from "./File";
 
-function PostInput() {
+function FormAdd() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -115,4 +115,4 @@ function PostInput() {
   );
 }
 
-export default PostInput;
+export default FormAdd;

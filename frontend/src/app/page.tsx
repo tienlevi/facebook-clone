@@ -1,14 +1,13 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Contact from "@/components/Contact/Contact";
 import Header from "@/components/Header/Header";
-import PostInput from "@/components/Posts/PostInput";
+import FormAdd from "@/components/Posts/FormAdd";
 import Posts from "@/components/Posts/Posts";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import Loading from "@/components/Loading/Loading";
 import useAuth from "@/hooks/useAuth";
-import useInView from "@/hooks/useInView";
 
 function Home() {
   const { status, isLoadingUser } = useAuth();
@@ -29,7 +28,7 @@ function Home() {
         <div className="flex">
           <Sidebar />
           <div className="w-1/2 mx-2">
-            <PostInput />
+            <FormAdd />
             <Posts />
           </div>
           <Contact />
