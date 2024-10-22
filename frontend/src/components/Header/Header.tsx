@@ -1,11 +1,11 @@
 import { useLayoutEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FaFacebook, FaMoon } from "react-icons/fa";
 import { IoSearchSharp, IoMenu } from "react-icons/io5";
 import { TbLogout } from "react-icons/tb";
 import { SidebarMobile } from "../Sidebar/Sidebar";
 import useAuth from "@/hooks/useAuth";
-import Image from "next/image";
 
 function Header() {
   const router = useRouter();
@@ -37,7 +37,9 @@ function Header() {
     <div>
       <div className="fixed top-0 w-full flex justify-between bg-white h-[56px] px-3 z-50">
         <div className="flex items-center">
-          <FaFacebook style={{ color: "#3578E5", fontSize: 40 }} />
+          <Link href={`/`}>
+            <FaFacebook style={{ color: "#3578E5", fontSize: 40 }} />
+          </Link>
           <div className="flex items-center bg-[#F0F2F5] ml-4 rounded-[50px]">
             <IoSearchSharp
               style={{
@@ -87,7 +89,10 @@ function Header() {
             toggleProfile ? "block" : "hidden"
           } absolute bottom-[-230px] right-5 bg-white rounded-[8px] w-[300px] p-2 shadow-[0_12px_28px_0_rgba(0,0,0,0.2)]`}
         >
-          <div className="flex items-center p-2 bg-white cursor-pointer shadow-[0_2px_12px_0_rgba(0,0,0,0.2)] rounded-[8px] hover:bg-[rgba(0,0,0,0.05)]">
+          <Link
+            href={`/profile/${user?._id}`}
+            className="flex items-center p-2 bg-white cursor-pointer shadow-[0_2px_12px_0_rgba(0,0,0,0.2)] rounded-[8px] hover:bg-[rgba(0,0,0,0.05)]"
+          >
             <img
               src={user?.avatar}
               alt=""
@@ -96,7 +101,7 @@ function Header() {
               className="w-[40px] h-[40px] object-cover rounded-full"
             />
             <p className="text-[17px] font-medium ml-2">{user?.name}</p>
-          </div>
+          </Link>
           <div className="flex items-center px-2 py-4 my-2 hover:bg-[rgba(0,0,0,0.05)] rounded-[8px] cursor-pointer">
             <FaMoon
               style={{

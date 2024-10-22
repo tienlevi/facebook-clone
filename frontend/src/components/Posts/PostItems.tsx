@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Link from "next/link";
 import { FormProvider, useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
@@ -9,7 +10,7 @@ import { IoEllipsisHorizontal } from "react-icons/io5";
 import { AiFillLike } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
 import { deletePost, likePost, unlikePost } from "@/services/post";
-import { deleteImageCloundinary, UploadCloundinary } from "@/utils/cloudinary";
+import { deleteImageCloundinary } from "@/utils/cloudinary";
 import LikePost from "./LikePost";
 import File from "./File";
 import FormEdit from "./FormEdit";
@@ -107,7 +108,7 @@ function PostItems({ posts }: Props) {
             )}
             <div className="flex items-center justify-between">
               <div className="flex">
-                <div className="block">
+                <Link href={`/profile/${item.userId}`} className="block">
                   <Image
                     src={item.userInfo?.avatar}
                     alt=""
@@ -115,7 +116,7 @@ function PostItems({ posts }: Props) {
                     height={40}
                     className="rounded-full w-[40px] h-[40px] object-cover"
                   />
-                </div>
+                </Link>
                 <div className="flex flex-col ml-2">
                   <p className="text-[15px] font-semibold">
                     {item.userInfo?.name}

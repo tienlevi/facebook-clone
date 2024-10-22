@@ -15,6 +15,15 @@ export const getAllPosts = async (req, res) => {
   }
 };
 
+export const getPostByUserId = async (req, res) => {
+  try {
+    const data = await PostSchema.find({ userId: req.params.userId });
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const addPost = async (req, res) => {
   try {
     const data = await PostSchema.create(req.body);

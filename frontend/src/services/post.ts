@@ -23,6 +23,15 @@ export const getPosts = async (
   }
 };
 
+export const getPostByUserId = async (userId: string) => {
+  try {
+    const response = await baseUrl.get(`/posts/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const deletePost = async (id: string) => {
   try {
     const response = await baseUrl.delete(`/posts/${id}`);
