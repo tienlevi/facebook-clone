@@ -10,7 +10,7 @@ import Image from "next/image";
 
 function Profile({ params }: { params: { id: string } }) {
   const { user } = useAuth();
-  const information = user?._id === params.id ? user : params.id;
+  const information = user?._id === params.id ? user._id : params.id;
   const { data } = useQuery<User>({
     queryKey: ["user", information],
     queryFn: async () => {
