@@ -8,3 +8,12 @@ export const getUserById = async (id: string) => {
     console.log(error);
   }
 };
+
+export const updateAvatar = async (userId: string, data: any) => {
+  try {
+    const response = await baseUrl.put(`/user/update-avatar/${userId}`, data);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

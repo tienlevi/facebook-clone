@@ -1,12 +1,13 @@
 import React from "react";
-interface Props {
+
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
   fileType: string;
   fileSrc: string;
 }
 
-function File({ fileType, fileSrc }: Props) {
+function File({ fileType, fileSrc, ...props }: Props) {
   return (
-    <div className="w-full">
+    <div {...props}>
       {fileType === "image" && (
         <img src={fileSrc} alt="" className="w-full object-cover" />
       )}

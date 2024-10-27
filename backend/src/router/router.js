@@ -11,7 +11,7 @@ import {
   likePost,
   unlikePost,
 } from "../controllers/posts.js";
-import { getUserById } from "../controllers/user.js";
+import { getUserById, updateAvatar } from "../controllers/user.js";
 
 const router = Router();
 
@@ -30,5 +30,6 @@ router.put("/posts/:userIdLike/like/:id", likePost);
 router.put("/posts/:userIdLike/unlike/:id", unlikePost);
 // User
 router.get("/user/:id", getUserById);
+router.put("/user/update-avatar/:id", updateAvatar);
 
 export default router;
