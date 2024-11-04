@@ -6,13 +6,32 @@ import { IoSearchSharp, IoMenu } from "react-icons/io5";
 import { TbLogout } from "react-icons/tb";
 import { SidebarMobile } from "../Sidebar/Sidebar";
 import useAuth from "@/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import { searchUsers } from "@/services/user";
+import useDebounce from "@/hooks/useDebounce";
+import { User } from "@/interface";
+import Image from "next/image";
 
 function Header() {
   const router = useRouter();
   const { user, setUser } = useAuth();
-  const [value, setValue] = useState<string>("");
+  const [searchValue, setSearchValue] = useState<string>("");
   const [toggleProfile, setToggleProfile] = useState<boolean>(false);
   const [toggleMenu, setToggleMenu] = useState<boolean>(false);
+  const [isOpenDropdown, setIsOpenDropdown] = useState<boolean>(false);
+  const debounceValue = useDebounce(searchValue, 300);
+  const {
+    data: userLists,
+    isLoading,
+    isFetching,
+  } = useQuery<User[]>({
+    queryKey: ["users", debounceValue],
+    queryFn: async () => {
+      return await searchUsers(debounceValue);
+    },
+  });
+
+  console.log(isFetching);
 
   const LogOut = () => {
     localStorage.removeItem("AccessToken");
@@ -34,7 +53,7 @@ function Header() {
   });
 
   return (
-    <div>
+    <>
       <div className="fixed top-0 w-full flex justify-between bg-white h-[56px] px-3 z-50">
         <div className="flex items-center">
           <Link href={`/`}>
@@ -53,8 +72,10 @@ function Header() {
             <input
               type="text"
               className="px-3 text-[#050505] bg-[#F0F2F5] h-[40px] rounded-[50px] focus:outline-none"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              onFocus={() => setIsOpenDropdown(true)}
+              onBlur={() => setIsOpenDropdown(false)}
               placeholder="Search Facebook"
             />
           </div>
@@ -129,9 +150,32 @@ function Header() {
             </p>
           </div>
         </div>
+        {isOpenDropdown && (
+          <div className="w-[280px] max-h-[calc(-50px+80vh)] shadow-[0_12px_12px_rgba(0,0,0,0.2)] absolute left-[70px] top-[60px] bg-white p-2 overflow-y-auto rounded-[5px]">
+            <div className="flex flex-col">
+              {isLoading && <p>Loading...</p>}
+              {debounceValue.length > 0 ? (
+                userLists?.map((list) => (
+                  <div key={list._id} className="flex items-center my-2">
+                    <Image
+                      src={list.avatar}
+                      width={40}
+                      height={40}
+                      alt=""
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                    <p className="ml-2">{list.name}</p>
+                  </div>
+                ))
+              ) : (
+                <p>Search user</p>
+              )}
+            </div>
+          </div>
+        )}
       </div>
       <SidebarMobile active={toggleMenu} />
-    </div>
+    </>
   );
 }
 

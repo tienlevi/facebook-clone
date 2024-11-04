@@ -17,3 +17,12 @@ export const updateAvatar = async (userId: string, data: any) => {
     console.log(error);
   }
 };
+
+export const searchUsers = async (search: string) => {
+  try {
+    const response = await baseUrl.get(`/search-users?search=${search}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
