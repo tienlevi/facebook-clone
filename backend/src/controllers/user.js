@@ -31,9 +31,10 @@ export const updateAvatar = async (req, res) => {
 export const searchUsers = async (req, res) => {
   const search = req.query.search || "";
   try {
-    const data = await UserSchema.find({
-      name: { $regex: search, $options: "i" },
-    }); // $regex không phân biệt chữ hoa và thường dùng để tìm kiếm kiểm tra tồn tại của 1 chuỗi VD: trường name tìm name bắt đầu với chữ 'Nguyễn'
+    const data = await UserSchema.find()
+      .where("name")
+      .regex(new RegExp(search, "i"));
+    // $regex không phân biệt chữ hoa và thường dùng để tìm kiếm kiểm tra tồn tại của 1 chuỗi VD: trường name tìm name bắt đầu với chữ 'Nguyễn'
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
