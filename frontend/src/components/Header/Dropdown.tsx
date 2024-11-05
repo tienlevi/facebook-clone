@@ -16,6 +16,7 @@ function Dropdown({ loading, lists }: Props) {
         {lists?.map((list) => (
           <Link
             href={`/profile/${list._id}`}
+            scroll={true}
             key={list._id}
             className="flex items-center my-1 p-2 rounded-[5px] hover:bg-[#E4E6EB]"
           >
