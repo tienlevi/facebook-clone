@@ -14,17 +14,20 @@ import { deleteImageCloundinary } from "@/utils/cloudinary";
 import LikePost from "./LikePost";
 import File from "./File";
 import FormEdit from "./FormEdit";
+import Comment from "../Comment/Comment";
 
 interface Props {
   posts: Post[];
+  openComment?: () => void;
 }
 
-function PostItems({ posts }: Props) {
+function PostItems({ posts, openComment }: Props) {
   const { user } = useAuth();
   const methods = useForm();
   const queryClient = useQueryClient();
   const [togglePost, setTogglePost] = useState<string | null>(null);
   const [selectPost, setSelectPost] = useState<null>(null);
+  const [toggleComment, setToggleComment] = useState<null>(null);
 
   const handleTogglePost = (id: string) => {
     setTogglePost(togglePost === id ? null : id);
@@ -143,7 +146,7 @@ function PostItems({ posts }: Props) {
               <AiFillLike style={{ fontSize: 20 }} />
               <p className="ml-2">{item.like.count} Likes</p>
             </div>
-            <div className="border-t border-[#c9c2c2] my-2">
+            <div className="border-t border-b border-[#c9c2c2] my-2">
               <div className="flex items-center justify-center my-3">
                 <LikePost
                   postId={item}
@@ -151,12 +154,16 @@ function PostItems({ posts }: Props) {
                   likePost={handleLikePost}
                   unlikePost={handleUnlikePost}
                 />
-                <div className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer">
+                <div
+                  onClick={openComment}
+                  className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer"
+                >
                   <FaRegComment style={{ fontSize: 25 }} />
                   <p className="ml-2">Comment</p>
                 </div>
               </div>
             </div>
+            <Comment />
           </div>
         )
       )}

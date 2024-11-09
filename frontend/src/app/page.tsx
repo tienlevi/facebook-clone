@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Contact from "@/components/Contact/Contact";
 import Header from "@/components/Header/Header";
@@ -12,6 +12,7 @@ import useAuth from "@/hooks/useAuth";
 function Home() {
   const { status, isLoadingUser } = useAuth();
   const router = useRouter();
+  const [openComment, setOpenComment] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === 403 || status === 401 || status === 400) {
