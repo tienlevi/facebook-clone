@@ -1,5 +1,14 @@
 import baseUrl from "@/config/axios";
 
+export const getUsers = async () => {
+  try {
+    const response = await baseUrl.get("/users");
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getUserById = async (id: string) => {
   try {
     const response = await baseUrl.get(`/user/${id}`);

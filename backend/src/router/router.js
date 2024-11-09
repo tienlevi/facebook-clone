@@ -11,7 +11,13 @@ import {
   likePost,
   unlikePost,
 } from "../controllers/posts.js";
-import { getUserById, searchUsers, updateAvatar } from "../controllers/user.js";
+import {
+  getUserById,
+  getUsers,
+  searchUsers,
+  updateAvatar,
+} from "../controllers/user.js";
+import { addComment, getCommentByPostId } from "../controllers/comment.js";
 
 const router = Router();
 
@@ -29,8 +35,12 @@ router.put("/posts/:id", editPost);
 router.put("/posts/:userIdLike/like/:id", likePost);
 router.put("/posts/:userIdLike/unlike/:id", unlikePost);
 // User
+router.get("/users", getUsers);
 router.get("/user/:id", getUserById);
 router.put("/user/update-avatar/:id", updateAvatar);
 router.get("/search-users", searchUsers);
+// Comment
+router.get("/comments/:postId", getCommentByPostId);
+router.post("/comments", addComment);
 
 export default router;

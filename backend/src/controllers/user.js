@@ -1,6 +1,15 @@
 import PostSchema from "../model/post.js";
 import UserSchema from "../model/user.js";
 
+export const getUsers = async (req, res) => {
+  try {
+    const data = await UserSchema.find(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getUserById = async (req, res) => {
   try {
     const data = await UserSchema.findById(req.params.id);

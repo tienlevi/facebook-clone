@@ -26,3 +26,12 @@ export interface Post {
     users: [{ userIdLike: string; name: string; avatar: string }];
   };
 }
+
+export interface Comment {
+  _id?: string;
+  postId: string;
+  userId: string;
+  name: string;
+  title: string;
+  avatar: string;
+}

@@ -14,20 +14,20 @@ import { deleteImageCloundinary } from "@/utils/cloudinary";
 import LikePost from "./LikePost";
 import File from "./File";
 import FormEdit from "./FormEdit";
-import Comment from "../Comment/Comment";
+import Comments from "../Comment/Comments";
+import { getCommentByPostId } from "@/services/comment";
 
 interface Props {
   posts: Post[];
-  openComment?: () => void;
 }
 
-function PostItems({ posts, openComment }: Props) {
+function PostItems({ posts }: Props) {
   const { user } = useAuth();
   const methods = useForm();
   const queryClient = useQueryClient();
   const [togglePost, setTogglePost] = useState<string | null>(null);
   const [selectPost, setSelectPost] = useState<null>(null);
-  const [toggleComment, setToggleComment] = useState<null>(null);
+  const [comments, setComments] = useState([]);
 
   const handleTogglePost = (id: string) => {
     setTogglePost(togglePost === id ? null : id);
@@ -70,6 +70,14 @@ function PostItems({ posts, openComment }: Props) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
+    },
+  });
+
+  const { mutate: openComment } = useMutation({
+    mutationKey: ["comments"],
+    mutationFn: async (id: string) => {
+      const response = await getCommentByPostId(id);
+      setComments(response);
     },
   });
 
@@ -155,7 +163,7 @@ function PostItems({ posts, openComment }: Props) {
                   unlikePost={handleUnlikePost}
                 />
                 <div
-                  onClick={openComment}
+                  onClick={() => openComment(item._id!)}
                   className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer"
                 >
                   <FaRegComment style={{ fontSize: 25 }} />
@@ -163,7 +171,7 @@ function PostItems({ posts, openComment }: Props) {
                 </div>
               </div>
             </div>
-            <Comment />
+            <Comments data={comments} postId={item._id!} />
           </div>
         )
       )}
