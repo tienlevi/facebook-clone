@@ -98,18 +98,14 @@ function FormAdd() {
             Photo / Video
           </p>
         </div>
-        {isPending ? (
-          <p className="bg-blue-500 w-[100px] text-white py-2 flex items-center justify-center mt-4 rounded-[10px] cursor-pointer">
-            Loading...
-          </p>
-        ) : (
-          <button
-            type="submit"
-            className="bg-blue-500 w-[100px] text-white py-2 flex items-center justify-center mt-4 rounded-[10px] cursor-pointer"
-          >
-            Post
-          </button>
-        )}
+
+        <button
+          type="submit"
+          className="bg-blue-500 w-[100px] text-white py-2 flex items-center justify-center mt-4 rounded-[10px] cursor-pointer"
+          disabled={isPending}
+        >
+          {isPending ? "Loading..." : "Post"}
+        </button>
       </div>
     </form>
   );

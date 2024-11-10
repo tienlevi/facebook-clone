@@ -16,7 +16,7 @@ const Comment = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Posts",
     },
-    title: { type: String, require: true },
+    content: { type: String, require: true },
   },
   { timestamps: true, versionKey: false }
 );

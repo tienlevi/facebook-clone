@@ -32,6 +32,6 @@ export interface Comment {
   postId: string;
   userId: string;
   name: string;
-  title: string;
+  content: string;
   avatar: string;
 }

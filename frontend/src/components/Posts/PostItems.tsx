@@ -15,7 +15,7 @@ import LikePost from "./LikePost";
 import File from "./File";
 import FormEdit from "./FormEdit";
 import Comments from "../Comment/Comments";
-import { getCommentByPostId } from "@/services/comment";
+import SendComment from "../Comment/SendComment";
 
 interface Props {
   posts: Post[];
@@ -27,7 +27,6 @@ function PostItems({ posts }: Props) {
   const queryClient = useQueryClient();
   const [togglePost, setTogglePost] = useState<string | null>(null);
   const [selectPost, setSelectPost] = useState<null>(null);
-  const [comments, setComments] = useState([]);
 
   const handleTogglePost = (id: string) => {
     setTogglePost(togglePost === id ? null : id);
@@ -70,14 +69,6 @@ function PostItems({ posts }: Props) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
-    },
-  });
-
-  const { mutate: openComment } = useMutation({
-    mutationKey: ["comments"],
-    mutationFn: async (id: string) => {
-      const response = await getCommentByPostId(id);
-      setComments(response);
     },
   });
 
@@ -162,16 +153,16 @@ function PostItems({ posts }: Props) {
                   likePost={handleLikePost}
                   unlikePost={handleUnlikePost}
                 />
-                <div
-                  onClick={() => openComment(item._id!)}
-                  className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer"
-                >
+                <div className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer">
                   <FaRegComment style={{ fontSize: 25 }} />
                   <p className="ml-2">Comment</p>
                 </div>
               </div>
             </div>
-            <Comments data={comments} postId={item._id!} />
+            <div className="h-[300px] bg-white overflow-x-hidden overflow-y-auto">
+              <Comments postId={item._id!} />
+            </div>
+            <SendComment key={item._id} postId={item._id} />
           </div>
         )
       )}
