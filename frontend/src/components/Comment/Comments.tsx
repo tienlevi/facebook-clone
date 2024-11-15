@@ -9,36 +9,44 @@ interface Props {
 
 function Comments({ postId }: Props) {
   const { data } = useQuery<CommentInterface[]>({
-    queryKey: ["comments"],
+    queryKey: ["comments", postId],
     queryFn: async () => {
       return await getCommentByPostId(postId);
     },
   });
 
+  console.log(data?.length);
+
   return (
     <>
-      {data?.map(
-        (comment) =>
-          comment.postId === postId && (
-            <div key={comment._id} className="flex my-3">
-              <div className="">
-                <Image
-                  src={comment.avatar}
-                  alt=""
-                  width={40}
-                  height={40}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
+      <div
+        className={`${
+          data?.length! >= 4 && "h-[300px]"
+        } bg-white overflow-x-hidden overflow-y-auto`}
+      >
+        {data?.map(
+          (comment) =>
+            comment.postId === postId && (
+              <div key={comment._id} className="flex my-3">
+                <div className="">
+                  <Image
+                    src={comment.avatar}
+                    alt=""
+                    width={40}
+                    height={40}
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                </div>
+                <div className="flex flex-col ml-4 py-1 px-3 w-[90%] bg-[#f0f2f5] rounded-lg">
+                  <p className="text-[18px] font-bold leading-8">
+                    {comment.name}
+                  </p>
+                  <p className="text-[15px]">{comment.content}</p>
+                </div>
               </div>
-              <div className="flex flex-col ml-4 py-1 px-3 w-[90%] bg-[#f0f2f5] rounded-lg">
-                <p className="text-[18px] font-bold leading-8">
-                  {comment.name}
-                </p>
-                <p className="text-[15px]">{comment.content}</p>
-              </div>
-            </div>
-          )
-      )}
+            )
+        )}
+      </div>
     </>
   );
 }

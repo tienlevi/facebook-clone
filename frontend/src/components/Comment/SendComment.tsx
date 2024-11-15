@@ -5,6 +5,7 @@ import useAuth from "@/hooks/useAuth";
 import { IoMdSend } from "react-icons/io";
 import { addComment, getCommentByPostId } from "@/services/comment";
 import { toast } from "react-toastify";
+import TextArea from "../ui/TextArea";
 
 interface Props {
   postId?: string;
@@ -15,7 +16,7 @@ function SendComment({ postId }: Props) {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm();
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
@@ -46,11 +47,10 @@ function SendComment({ postId }: Props) {
         className="w-10 h-10 rounded-full object-cover"
       />
       <div className="ml-2 bg-[rgb(240,242,245)] rounded-[20px] w-full">
-        <textarea
+        <TextArea
           {...register("content", { required: true })}
-          disabled={isSubmitting}
-          className="w-full pl-2 text-[rgb(28,30,33)] bg-[rgb(240,242,245)] rounded-[20px] resize-none focus:outline-none"
-        ></textarea>
+          className="w-full pl-2"
+        />
         <p className="text-red-500">
           {errors?.content && (errors.content.message as string)}
         </p>
