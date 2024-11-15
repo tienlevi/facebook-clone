@@ -159,9 +159,7 @@ function PostItems({ posts }: Props) {
                 </div>
               </div>
             </div>
-            <div className="h-[300px] bg-white overflow-x-hidden overflow-y-auto">
-              <Comments postId={item._id!} />
-            </div>
+            <Comments postId={item._id!} />
             <SendComment key={item._id} postId={item._id} />
           </div>
         )

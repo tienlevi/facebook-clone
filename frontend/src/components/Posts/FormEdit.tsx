@@ -8,6 +8,7 @@ import { editPost } from "@/services/post";
 import usePreview from "@/hooks/usePreview";
 import useAuth from "@/hooks/useAuth";
 import File from "./File";
+import TextArea from "../ui/TextArea";
 
 interface Props {
   onSelectPost: (value: any) => {};
@@ -67,11 +68,10 @@ function FormEdit({ onSelectPost, filePostType, fileSrc }: Props) {
       className="block bg-white rounded-[8px] p-4 shadow-[0_1px_2px_0_rgba(0,0,0,0.2)]"
     >
       <div className="flex pb-4 border-b border-[rgb(228,230,235)]">
-        <textarea
+        <TextArea
           {...register("title", { required: true })}
-          disabled={isSubmitting}
-          className="w-full ml-2 pl-2 text-[rgb(28,30,33)] bg-[rgb(240,242,245)] rounded-[20px] resize-none focus:outline-none"
-        ></textarea>
+          className="w-full ml-2 pl-2"
+        />
         <p className="text-red-500">
           {errors?.title && (errors.title.message as string)}
         </p>

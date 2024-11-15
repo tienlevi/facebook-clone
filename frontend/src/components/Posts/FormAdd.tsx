@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { UploadCloundinary } from "@/utils/cloudinary";
 import { addPost } from "@/services/post";
 import File from "./File";
+import TextArea from "../ui/TextArea";
 
 function FormAdd() {
   const { user } = useAuth();
@@ -18,7 +19,7 @@ function FormAdd() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm();
   const { file, fileType, handleChangeFile } = usePreview();
   const limitSizeMB = (fileRef.current?.files?.[0]?.size as number) / 1024 ** 2;
@@ -71,12 +72,10 @@ function FormAdd() {
           height={40}
           className="rounded-full w-[40px] h-[40px] object-cover"
         />
-        <input
+        <TextArea
           {...register("title", { required: "Field cannot be empty" })}
-          type="text"
-          className="w-full ml-2 pl-2 text-[rgb(28,30,33)] bg-[rgb(240,242,245)] rounded-[20px] focus:outline-none"
+          className="w-full h-full ml-2 pl-2"
           placeholder="What's on your mind ?"
-          disabled={isSubmitting}
         />
       </div>
       <p className="text-red-500">
