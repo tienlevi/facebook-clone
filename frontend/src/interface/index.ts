@@ -34,4 +34,6 @@ export interface Comment {
   name: string;
   content: string;
   avatar: string;
+  createdAt: string;
+  updateAt: string;
 }

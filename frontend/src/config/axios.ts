@@ -2,7 +2,7 @@ import { baseServer } from "@/constant";
 import axios from "axios";
 
 const baseUrl = axios.create({
-  baseURL: `${baseServer}/api`,
+  baseURL: `http://localhost:8080/api`,
 });
 
 export default baseUrl;

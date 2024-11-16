@@ -17,7 +17,11 @@ import {
   searchUsers,
   updateAvatar,
 } from "../controllers/user.js";
-import { addComment, getCommentByPostId } from "../controllers/comment.js";
+import {
+  addComment,
+  deleteComment,
+  getCommentByPostId,
+} from "../controllers/comment.js";
 
 const router = Router();
 
@@ -42,5 +46,6 @@ router.get("/search-users", searchUsers);
 // Comment
 router.get("/comments/:postId", getCommentByPostId);
 router.post("/comments", addComment);
+router.delete("/comments/:id", deleteComment);
 
 export default router;

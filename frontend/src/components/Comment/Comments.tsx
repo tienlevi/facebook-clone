@@ -1,13 +1,17 @@
 import Image from "next/image";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Comment as CommentInterface } from "@/interface";
-import { getCommentByPostId } from "@/services/comment";
+import { deleteComment, getCommentByPostId } from "@/services/comment";
+import { toast } from "react-toastify";
+import useAuth from "@/hooks/useAuth";
 
 interface Props {
   postId: string;
 }
 
 function Comments({ postId }: Props) {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
   const { data } = useQuery<CommentInterface[]>({
     queryKey: ["comments", postId],
     queryFn: async () => {
@@ -15,7 +19,18 @@ function Comments({ postId }: Props) {
     },
   });
 
-  console.log(data?.length);
+  const { mutate: handleDelete } = useMutation({
+    mutationKey: ["comments"],
+    mutationFn: async (id: string) => {
+      if (confirm("Are you sure want to delete comment ?")) {
+        return await deleteComment(id);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+      toast.success("Delete success");
+    },
+  });
 
   return (
     <>
@@ -37,11 +52,29 @@ function Comments({ postId }: Props) {
                     className="w-10 h-10 rounded-full object-cover"
                   />
                 </div>
-                <div className="flex flex-col ml-4 py-1 px-3 w-[90%] bg-[#f0f2f5] rounded-lg">
-                  <p className="text-[18px] font-bold leading-8">
-                    {comment.name}
-                  </p>
-                  <p className="text-[15px]">{comment.content}</p>
+                <div className="flex flex-col ml-2 w-[90%]">
+                  <div className="flex flex-col py-1 px-3 bg-[#f0f2f5] rounded-lg">
+                    <p className="text-[18px] font-bold leading-8">
+                      {comment.name}
+                    </p>
+                    <p className="text-[15px]">{comment.content}</p>
+                  </div>
+                  {user?._id === comment.userId && (
+                    <div className="flex mt-1 gap-3">
+                      <div className="text-[#65686c] text-[16px] cursor-pointer hover:underline">
+                        {comment.createdAt}
+                      </div>
+                      <div className="text-[#65686c] text-[16px] cursor-pointer hover:underline">
+                        Edit
+                      </div>
+                      <div
+                        onClick={() => handleDelete(comment._id!)}
+                        className="text-[#65686c] text-[16px] cursor-pointer hover:underline"
+                      >
+                        Delete
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )

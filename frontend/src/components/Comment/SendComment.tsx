@@ -31,7 +31,13 @@ function SendComment({ postId }: Props) {
   });
 
   const onSubmit = (data: any) => {
-    mutate({ ...data, name: user?.name, avatar: user?.avatar, postId: postId });
+    mutate({
+      ...data,
+      name: user?.name,
+      avatar: user?.avatar,
+      userId: user?._id,
+      postId: postId,
+    });
   };
 
   return (
