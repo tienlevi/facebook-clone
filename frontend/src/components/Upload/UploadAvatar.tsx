@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuth from "@/hooks/useAuth";
 import Image from "next/image";
 import { IoMdClose } from "react-icons/io";
@@ -14,6 +14,7 @@ interface Props {
 }
 
 function UploadAvatar({ onOpenModel }: Props) {
+  const queryClient = useQueryClient();
   const { user } = useAuth();
   const { file, fileType, handleChangeFile } = usePreview();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -27,10 +28,10 @@ function UploadAvatar({ onOpenModel }: Props) {
         name: user?.name,
         avatar: fileCloudinary?.secure_url,
       });
-      console.log(response);
       return response;
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user", user?._id] });
       toast.success("Upload Avatar success");
     },
   });

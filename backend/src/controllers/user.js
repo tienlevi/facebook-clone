@@ -1,3 +1,4 @@
+import CommentSchema from "../model/comment.js";
 import PostSchema from "../model/post.js";
 import UserSchema from "../model/user.js";
 
@@ -21,17 +22,24 @@ export const getUserById = async (req, res) => {
 
 export const updateAvatar = async (req, res) => {
   const { name, avatar } = req.body;
+
   try {
     const postByUserId = await PostSchema.updateMany(
       { userId: req.params.id },
       { userInfo: { name: name, avatar: avatar } }
     );
-    const uploadAvatar = await UserSchema.findOneAndUpdate(
+    const uploadPostAvatar = await UserSchema.findOneAndUpdate(
       { _id: req.params.id },
       { avatar: avatar },
       { new: true }
     );
-    return res.status(200).json({ uploadAvatar, postByUserId });
+    const uploadCommnentAvatar = await CommentSchema.updateMany(
+      { userId: req.params.id },
+      { avatar: avatar }
+    );
+    return res
+      .status(200)
+      .json({ uploadPostAvatar, uploadCommnentAvatar, postByUserId });
   } catch (error) {
     console.log(error);
   }
