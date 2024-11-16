@@ -26,3 +26,16 @@ export const deleteComment = async (req, res) => {
     console.log(error);
   }
 };
+
+export const editComment = async (req, res) => {
+  try {
+    const data = await CommentSchema.findOneAndUpdate(
+      { _id: req.params.id },
+      req.body,
+      { new: true }
+    );
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};

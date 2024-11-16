@@ -20,6 +20,7 @@ import {
 import {
   addComment,
   deleteComment,
+  editComment,
   getCommentByPostId,
 } from "../controllers/comment.js";
 
@@ -47,5 +48,6 @@ router.get("/search-users", searchUsers);
 router.get("/comments/:postId", getCommentByPostId);
 router.post("/comments", addComment);
 router.delete("/comments/:id", deleteComment);
+router.put("/comments/:id", editComment);
 
 export default router;

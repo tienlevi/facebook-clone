@@ -26,3 +26,12 @@ export const deleteComment = async (id: string) => {
     console.log(error);
   }
 };
+
+export const editComment = async (id: string, data: any) => {
+  try {
+    const response = await baseUrl.put(`/comments/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
