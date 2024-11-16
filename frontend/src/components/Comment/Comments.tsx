@@ -4,6 +4,7 @@ import { Comment as CommentInterface } from "@/interface";
 import { deleteComment, getCommentByPostId } from "@/services/comment";
 import { toast } from "react-toastify";
 import useAuth from "@/hooks/useAuth";
+import { formatDate } from "@/utils/format";
 
 interface Props {
   postId: string;
@@ -61,8 +62,8 @@ function Comments({ postId }: Props) {
                   </div>
                   {user?._id === comment.userId && (
                     <div className="flex mt-1 gap-3">
-                      <div className="text-[#65686c] text-[16px] cursor-pointer hover:underline">
-                        {comment.createdAt}
+                      <div className="text-[#65686c] text-[16px]">
+                        {formatDate(comment.createdAt)}
                       </div>
                       <div className="text-[#65686c] text-[16px] cursor-pointer hover:underline">
                         Edit

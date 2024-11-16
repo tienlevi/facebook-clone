@@ -16,6 +16,7 @@ import File from "./File";
 import FormEdit from "./FormEdit";
 import Comments from "../Comment/Comments";
 import SendComment from "../Comment/SendComment";
+import { formatDate } from "@/utils/format";
 
 interface Props {
   posts: Post[];
@@ -124,7 +125,7 @@ function PostItems({ posts }: Props) {
                     {item.userInfo?.name}
                   </p>
                   <p className="text-[14px] text-[rgb(101,103,107)]">
-                    {new Date(item.createdAt).toLocaleString()}
+                    {formatDate(item.createdAt)}
                   </p>
                 </div>
               </div>
