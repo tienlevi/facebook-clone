@@ -1,12 +1,15 @@
 import useAuth from "@/hooks/useAuth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FaMoon } from "react-icons/fa";
+import { useState } from "react";
+import { IoLanguage } from "react-icons/io5";
 import { TbLogout } from "react-icons/tb";
+import Language from "./Language";
 
 function Account({ toggle }: { toggle: boolean }) {
   const router = useRouter();
   const { user, setUser } = useAuth();
+  const [open, setOpen] = useState<boolean>(false);
 
   const LogOut = () => {
     localStorage.removeItem("AccessToken");
@@ -19,7 +22,7 @@ function Account({ toggle }: { toggle: boolean }) {
     <div
       className={`${
         toggle ? "block" : "hidden"
-      } absolute bottom-[-230px] right-5 bg-white rounded-[8px] w-[300px] p-2 shadow-[0_12px_28px_0_rgba(0,0,0,0.2)]`}
+      } absolute top-[100%] right-5 bg-white rounded-[8px] w-[300px] p-2 shadow-[0_12px_28px_0_rgba(0,0,0,0.2)]`}
     >
       <Link
         href={`/profile/${user?._id}`}
@@ -34,32 +37,41 @@ function Account({ toggle }: { toggle: boolean }) {
         />
         <p className="text-[17px] font-medium ml-2">{user?.name}</p>
       </Link>
-      <div className="flex items-center px-2 py-4 my-2 hover:bg-[rgba(0,0,0,0.05)] rounded-[8px] cursor-pointer">
-        <FaMoon
-          style={{
-            fontSize: 30,
-            color: "black",
-            background: "rgb(228, 230, 235)",
-            padding: 4,
-            borderRadius: "100%",
-          }}
-        />
-        <p className="text-[17px] font-medium ml-2">Theme Mode</p>
-      </div>
-      <div className="flex items-center px-2 py-4 my-2 hover:bg-[rgba(0,0,0,0.05)] rounded-[8px] cursor-pointer">
-        <TbLogout
-          style={{
-            fontSize: 30,
-            color: "black",
-            background: "rgb(228, 230, 235)",
-            padding: 4,
-            borderRadius: "100%",
-          }}
-        />
-        <p className="text-[17px] font-medium ml-2" onClick={LogOut}>
-          Log Out
-        </p>
-      </div>
+      {open ? (
+        <Language open={open} setOpen={() => setOpen(false)} />
+      ) : (
+        <>
+          <div
+            onClick={() => setOpen(true)}
+            className="flex items-center px-2 py-4 my-2 hover:bg-[rgba(0,0,0,0.05)] rounded-[8px] cursor-pointer"
+          >
+            <IoLanguage
+              style={{
+                fontSize: 30,
+                color: "black",
+                background: "rgb(228, 230, 235)",
+                padding: 4,
+                borderRadius: "100%",
+              }}
+            />
+            <p className="text-[17px] font-medium ml-2">Language (EN)</p>
+          </div>
+          <div className="flex items-center px-2 py-4 my-2 hover:bg-[rgba(0,0,0,0.05)] rounded-[8px] cursor-pointer">
+            <TbLogout
+              style={{
+                fontSize: 30,
+                color: "black",
+                background: "rgb(228, 230, 235)",
+                padding: 4,
+                borderRadius: "100%",
+              }}
+            />
+            <p className="text-[17px] font-medium ml-2" onClick={LogOut}>
+              Log Out
+            </p>
+          </div>
+        </>
+      )}
     </div>
   );
 }
