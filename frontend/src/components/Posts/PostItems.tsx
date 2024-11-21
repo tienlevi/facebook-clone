@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Link from "next/link";
 import { FormProvider, useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -17,6 +17,7 @@ import FormEdit from "./FormEdit";
 import Comments from "../Comment/Comments";
 import SendComment from "../Comment/SendComment";
 import { formatDate } from "@/utils/format";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 interface Props {
   posts: Post[];
@@ -28,7 +29,7 @@ function PostItems({ posts }: Props) {
   const queryClient = useQueryClient();
   const [togglePost, setTogglePost] = useState<string | null>(null);
   const [selectPost, setSelectPost] = useState<null>(null);
-
+  const { t } = useContext(LanguageProvider);
   const handleTogglePost = (id: string) => {
     setTogglePost(togglePost === id ? null : id);
   };
@@ -144,7 +145,9 @@ function PostItems({ posts }: Props) {
             <File fileType={item.fileType} fileSrc={item.fileSrc} />
             <div className="flex items-center">
               <AiFillLike style={{ fontSize: 20 }} />
-              <p className="ml-2">{item.like.count} Likes</p>
+              <p className="ml-2">
+                {item.like.count} {t("Likes")!}
+              </p>
             </div>
             <div className="border-t border-b border-[#c9c2c2] my-2">
               <div className="flex items-center justify-center my-3">
@@ -156,7 +159,7 @@ function PostItems({ posts }: Props) {
                 />
                 <div className="w-1/2 flex items-center justify-center py-2 rounded-[10px] hover:bg-[#E4E6EB] cursor-pointer">
                   <FaRegComment style={{ fontSize: 25 }} />
-                  <p className="ml-2">Comment</p>
+                  <p className="ml-2">{t("Comment")!}</p>
                 </div>
               </div>
             </div>

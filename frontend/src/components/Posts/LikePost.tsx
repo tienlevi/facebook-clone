@@ -1,5 +1,7 @@
-import useAuth from "@/hooks/useAuth";
+import { useContext } from "react";
 import { AiFillLike, AiOutlineLike } from "react-icons/ai";
+import { LanguageProvider } from "@/context/LanguageContext";
+import useAuth from "@/hooks/useAuth";
 
 interface Props {
   postId: any;
@@ -10,6 +12,7 @@ interface Props {
 
 function LikePost({ postId, users, likePost, unlikePost }: Props) {
   const { user } = useAuth();
+  const { t } = useContext(LanguageProvider);
 
   return (
     <>
@@ -19,7 +22,7 @@ function LikePost({ postId, users, likePost, unlikePost }: Props) {
           onClick={() => unlikePost(postId)}
         >
           <AiFillLike style={{ fontSize: 25 }} />
-          <p className="ml-2">Liked</p>
+          <p className="ml-2">{t("Like")!}</p>
         </div>
       ) : (
         <div
@@ -27,7 +30,7 @@ function LikePost({ postId, users, likePost, unlikePost }: Props) {
           onClick={() => likePost(postId)}
         >
           <AiOutlineLike style={{ fontSize: 25 }} />
-          <p className="ml-2">Like</p>
+          <p className="ml-2">{t("Like")!}</p>
         </div>
       )}
     </>

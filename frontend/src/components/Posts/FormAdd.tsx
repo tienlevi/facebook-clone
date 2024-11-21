@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState, useRef, useContext } from "react";
 import { FaImages } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -10,12 +10,14 @@ import { UploadCloundinary } from "@/utils/cloudinary";
 import { addPost } from "@/services/post";
 import File from "./File";
 import TextArea from "../ui/TextArea";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 function FormAdd() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState<boolean>(false);
+  const { t } = useContext(LanguageProvider);
   const {
     register,
     handleSubmit,
@@ -103,7 +105,7 @@ function FormAdd() {
           className="bg-blue-500 w-[100px] text-white py-2 flex items-center justify-center mt-4 rounded-[10px] cursor-pointer"
           disabled={isPending}
         >
-          {isPending ? "Loading..." : "Post"}
+          {isPending ? "Loading..." : t("Send")!}
         </button>
       </div>
     </form>

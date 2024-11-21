@@ -2,12 +2,15 @@ import useAuth from "@/hooks/useAuth";
 import { FaUserFriends } from "react-icons/fa";
 import { PiTelevisionSimpleBold } from "react-icons/pi";
 import Image from "next/image";
+import { useContext } from "react";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 interface Props {
   active: boolean;
 }
 
 export function Sidebar() {
+  const { t } = useContext(LanguageProvider);
   const { user } = useAuth();
 
   return (
@@ -25,23 +28,21 @@ export function Sidebar() {
         </div>
         <div className="my-3 flex items-center">
           <FaUserFriends style={{ fontSize: 35 }} />
-          <p className="text-[16px] font-medium ml-3">Friends</p>
+          <p className="text-[16px] font-medium ml-3">{t("Friends")!}</p>
         </div>
         <div className="my-3 flex items-center">
           <PiTelevisionSimpleBold style={{ fontSize: 35 }} />
-          <p className="text-[16px] font-medium ml-3">Watch</p>
+          <p className="text-[16px] font-medium ml-3">{t("Watch")!}</p>
         </div>
-      </div>
-      <div className="block mt-3">
-        <h1 className="text-[17px] text-[rgb(101,103,107)] font-semibold">
-          Your shortcuts
-        </h1>
       </div>
     </div>
   );
 }
 
 export function SidebarMobile({ active }: Props) {
+  const { t } = useContext(LanguageProvider);
+  const { user } = useAuth();
+
   return (
     <div
       className={`${
@@ -57,21 +58,18 @@ export function SidebarMobile({ active }: Props) {
             height={35}
             className="rounded-full"
           />
-          <p className="text-[19px] font-medium ml-3">Tiến Nguyễn</p>
+          <p className="text-[19px] font-medium ml-3">{user?.name}</p>
         </div>
         <div className="my-3 flex items-center">
           <FaUserFriends style={{ fontSize: 35 }} />
-          <p className="text-[16px] font-medium ml-3">Friends</p>
+          <p className="text-[16px] font-medium ml-3">{t("Friends")!}</p>
         </div>
         <div className="my-3 flex items-center">
           <PiTelevisionSimpleBold style={{ fontSize: 35 }} />
-          <p className="text-[16px] font-medium ml-3">Watch</p>
+          <p className="text-[16px] font-medium ml-3">{t("Watch")!}</p>
         </div>
       </div>
       <div className="block mt-3">
-        <h1 className="text-[17px] text-[rgb(101,103,107)] font-semibold">
-          Your shortcuts
-        </h1>
         <div className="my-3 flex items-center">
           <Image
             src="https://res.cloudinary.com/dbjkk9wg0/image/upload/v1720775882/facebook-posts/xo41kgbhyxjfbdmfq4n6.png"

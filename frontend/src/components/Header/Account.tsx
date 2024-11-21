@@ -1,15 +1,17 @@
+import { useState, useContext } from "react";
 import useAuth from "@/hooks/useAuth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { IoLanguage } from "react-icons/io5";
 import { TbLogout } from "react-icons/tb";
 import Language from "./Language";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 function Account({ toggle }: { toggle: boolean }) {
   const router = useRouter();
   const { user, setUser } = useAuth();
   const [open, setOpen] = useState<boolean>(false);
+  const { t, language } = useContext(LanguageProvider);
 
   const LogOut = () => {
     localStorage.removeItem("AccessToken");
@@ -54,7 +56,9 @@ function Account({ toggle }: { toggle: boolean }) {
                 borderRadius: "100%",
               }}
             />
-            <p className="text-[17px] font-medium ml-2">Language (EN)</p>
+            <p className="text-[17px] font-medium ml-2">
+              {t("Language")!} <span className="uppercase">({language})</span>
+            </p>
           </div>
           <div className="flex items-center px-2 py-4 my-2 hover:bg-[rgba(0,0,0,0.05)] rounded-[8px] cursor-pointer">
             <TbLogout
@@ -67,7 +71,7 @@ function Account({ toggle }: { toggle: boolean }) {
               }}
             />
             <p className="text-[17px] font-medium ml-2" onClick={LogOut}>
-              Log Out
+              {t("Logout")!}
             </p>
           </div>
         </>

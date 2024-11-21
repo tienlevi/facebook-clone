@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState, useContext } from "react";
 import Link from "next/link";
 import { FaFacebook, FaMoon } from "react-icons/fa";
 import { IoSearchSharp, IoMenu } from "react-icons/io5";
@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { searchUsers } from "@/services/user";
 import useDebounce from "@/hooks/useDebounce";
 import { User } from "@/interface";
+import { LanguageProvider } from "@/context/LanguageContext";
 import Dropdown from "./Dropdown";
 import Account from "./Account";
 
@@ -16,6 +17,7 @@ function Header() {
   const [searchValue, setSearchValue] = useState<string>("");
   const [toggleProfile, setToggleProfile] = useState<boolean>(false);
   const [toggleMenu, setToggleMenu] = useState<boolean>(false);
+  const { t } = useContext(LanguageProvider);
   const debounceValue = useDebounce(searchValue, 300);
   const { data: userLists, isLoading } = useQuery<User[]>({
     queryKey: ["users", debounceValue],
@@ -58,7 +60,7 @@ function Header() {
               className="px-3 text-[#050505] bg-[#F0F2F5] h-[40px] rounded-[50px] focus:outline-none"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search User"
+              placeholder={t("SearchUser")!}
             />
           </div>
         </div>

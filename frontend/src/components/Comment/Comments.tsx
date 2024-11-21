@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,6 +13,7 @@ import useAuth from "@/hooks/useAuth";
 import { formatDate } from "@/utils/format";
 import TextArea from "../ui/TextArea";
 import { IoMdSend } from "react-icons/io";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 interface Props {
   postId: string;
@@ -28,6 +29,7 @@ function Comments({ postId }: Props) {
     formState: { errors },
   } = useForm();
   const [selectComment, setSelectComment] = useState<null>(null);
+  const { t } = useContext(LanguageProvider);
   const { data } = useQuery<CommentInterface[]>({
     queryKey: ["comments", postId],
     queryFn: async () => {
@@ -156,13 +158,13 @@ function Comments({ postId }: Props) {
                           }}
                           className="text-[#65686c] text-[16px] cursor-pointer hover:underline"
                         >
-                          Edit
+                          {t("Edit")!}
                         </div>
                         <div
                           onClick={() => handleDelete(comment._id!)}
                           className="text-[#65686c] text-[16px] cursor-pointer hover:underline"
                         >
-                          Delete
+                          {t("Delete")!}
                         </div>
                       </>
                     )}

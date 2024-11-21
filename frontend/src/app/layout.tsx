@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import QueryContext from "@/context/QueryContext";
+import LanguageContext from "@/context/LanguageContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,8 +22,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <QueryContext>
-          <ToastContainer />
-          {children}
+          <LanguageContext>
+            <ToastContainer />
+            {children}
+          </LanguageContext>
         </QueryContext>
       </body>
     </html>

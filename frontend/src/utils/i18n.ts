@@ -43,7 +43,10 @@ const resources = {
 
 i18n.use(initReactI18next).init({
   resources,
-  lng: localStorage.getItem("en") || "en",
+  lng:
+    (typeof window !== "undefined" &&
+      JSON.parse(localStorage.getItem("locale")!)) ||
+    "en",
   interpolation: {
     escapeValue: false,
   },

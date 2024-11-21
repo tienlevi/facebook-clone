@@ -1,16 +1,20 @@
+import { useContext } from "react";
 import { IoMdArrowBack } from "react-icons/io";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 const languages = [
-  { name: "Vietnamese", iso: "VN" },
-  { name: "English", iso: "EN" },
-  { name: "Germany", iso: "DE" },
-  { name: "France", iso: "FR" },
-  { name: "Italian", iso: "IT" },
-  { name: "Japanese", iso: "JP" },
-  { name: "Korean", iso: "KO" },
+  { name: "Vietnamese", iso: "vi" },
+  { name: "English", iso: "en" },
+  { name: "Germany", iso: "de" },
+  { name: "France", iso: "fr" },
+  { name: "Italian", iso: "it" },
+  { name: "Japanese", iso: "jp" },
+  { name: "Korean", iso: "ko" },
 ];
 
 function Language({ open, setOpen }: { open: boolean; setOpen: () => void }) {
+  const { handleChangeLanguage } = useContext(LanguageProvider);
+
   return (
     <>
       <IoMdArrowBack
@@ -20,11 +24,13 @@ function Language({ open, setOpen }: { open: boolean; setOpen: () => void }) {
       {open &&
         languages.map((language) => (
           <div
+            onClick={() => handleChangeLanguage(language.iso)}
             key={language.iso}
             className="flex items-center px-2 py-4 my-2 hover:bg-[rgba(0,0,0,0.05)] rounded-[8px] cursor-pointer"
           >
             <p className="text-[17px] font-medium ml-2">
-              {language.name} ({language.iso})
+              {language.name}{" "}
+              <span className="uppercase">({language.iso})</span>
             </p>
           </div>
         ))}
