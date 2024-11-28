@@ -11,6 +11,7 @@ import { getUserById } from "@/services/user";
 import { RxAvatar } from "react-icons/rx";
 import { CiImageOn } from "react-icons/ci";
 import UploadAvatar from "@/components/Upload/UploadAvatar";
+import { defaultAvatar } from "@/constant";
 
 function Profile({ params }: { params: { id: string } }) {
   const { user } = useAuth();
@@ -49,8 +50,8 @@ function Profile({ params }: { params: { id: string } }) {
             <Image
               width={150}
               height={150}
-              src={data?.avatar!}
-              alt=""
+              src={data?.avatar! ? data.avatar : defaultAvatar}
+              alt={data?.name!}
               className="rounded-full w-[150px] h-[150px] object-cover cursor-pointer"
               onClick={() => setToggleAvatar(!toggleAvatar)}
             />

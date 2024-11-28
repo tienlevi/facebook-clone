@@ -6,6 +6,7 @@ import { IoMdSend } from "react-icons/io";
 import { addComment, getCommentByPostId } from "@/services/comment";
 import { toast } from "react-toastify";
 import TextArea from "../ui/TextArea";
+import { defaultAvatar } from "@/constant";
 
 interface Props {
   postId?: string;
@@ -46,7 +47,7 @@ function SendComment({ postId }: Props) {
       className="relative flex items-center"
     >
       <Image
-        src={user?.avatar!}
+        src={user?.avatar! ? user.avatar : defaultAvatar}
         alt=""
         width={40}
         height={40}

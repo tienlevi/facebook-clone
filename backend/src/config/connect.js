@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
-const api = "mongodb+srv://admin:admin@cluster0.kpzguit.mongodb.net";
+import dotenv from "dotenv";
+dotenv.config();
+
+const api = process.env.MONGODB_API;
 
 async function Connect() {
   await mongoose

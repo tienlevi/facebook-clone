@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { User } from "@/interface";
 import Image from "next/image";
+import { defaultAvatar } from "@/constant";
 
 interface Props {
   loading?: boolean;
@@ -21,7 +22,7 @@ function Dropdown({ loading, lists }: Props) {
             className="flex items-center my-1 p-2 rounded-[5px] hover:bg-[#E4E6EB]"
           >
             <Image
-              src={list.avatar}
+              src={list.avatar ? list.avatar : defaultAvatar}
               width={40}
               height={40}
               alt=""

@@ -1,6 +1,7 @@
-import { useLayoutEffect, useState, useContext } from "react";
+"use client";
+import { useLayoutEffect, useState, useContext, useEffect } from "react";
 import Link from "next/link";
-import { FaFacebook, FaMoon } from "react-icons/fa";
+import { FaFacebook } from "react-icons/fa";
 import { IoSearchSharp, IoMenu } from "react-icons/io5";
 import { SidebarMobile } from "../Sidebar/Sidebar";
 import useAuth from "@/hooks/useAuth";
@@ -14,6 +15,7 @@ import Account from "./Account";
 
 function Header() {
   const { user } = useAuth();
+  const [placeholder, setPlaceholder] = useState("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [toggleProfile, setToggleProfile] = useState<boolean>(false);
   const [toggleMenu, setToggleMenu] = useState<boolean>(false);
@@ -38,6 +40,10 @@ function Header() {
     return () => window.removeEventListener("resize", resize);
   });
 
+  useEffect(() => {
+    setPlaceholder(t("SearchUser")!);
+  }, []);
+
   return (
     <>
       <div className="fixed top-0 w-full flex justify-between bg-white h-[56px] px-3 z-50">
@@ -60,7 +66,7 @@ function Header() {
               className="px-3 text-[#050505] bg-[#F0F2F5] h-[40px] rounded-[50px] focus:outline-none"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder={t("SearchUser")!}
+              placeholder={placeholder}
             />
           </div>
         </div>

@@ -14,6 +14,7 @@ import { formatDate } from "@/utils/format";
 import TextArea from "../ui/TextArea";
 import { IoMdSend } from "react-icons/io";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { defaultAvatar } from "@/constant";
 
 interface Props {
   postId: string;
@@ -77,7 +78,7 @@ function Comments({ postId }: Props) {
           selectComment === comment._id ? (
             <div className="flex items-start">
               <Image
-                src={user?.avatar!}
+                src={user?.avatar! ? user.avatar : defaultAvatar}
                 alt=""
                 width={40}
                 height={40}
@@ -128,7 +129,7 @@ function Comments({ postId }: Props) {
               <div key={comment._id} className="flex my-3">
                 <div className="">
                   <Image
-                    src={comment.avatar}
+                    src={user?.avatar! ? user.avatar : defaultAvatar}
                     alt=""
                     width={40}
                     height={40}
@@ -172,7 +173,7 @@ function Comments({ postId }: Props) {
                 </div>
               </div>
             )
-          )
+          ),
         )}
       </div>
     </>
