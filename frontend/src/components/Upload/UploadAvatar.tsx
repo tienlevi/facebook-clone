@@ -18,11 +18,12 @@ function UploadAvatar({ onOpenModel }: Props) {
   const { user } = useAuth();
   const { file, fileType, handleChangeFile } = usePreview();
   const fileRef = useRef<HTMLInputElement>(null);
+
   const { mutate, isPending } = useMutation({
     mutationKey: ["user"],
     mutationFn: async () => {
       const fileCloudinary = await UploadCloundinary(
-        fileRef.current?.files?.[0] ?? ""
+        fileRef.current?.files?.[0] ?? "",
       );
       const response = await updateAvatar(user?._id!, {
         name: user?.name,

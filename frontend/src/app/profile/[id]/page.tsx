@@ -1,5 +1,6 @@
 "use client";
-import { useLayoutEffect, useState } from "react";
+import { FormEvent, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Header from "@/components/Header/Header";
@@ -12,17 +13,38 @@ import { RxAvatar } from "react-icons/rx";
 import { CiImageOn } from "react-icons/ci";
 import UploadAvatar from "@/components/Upload/UploadAvatar";
 import { defaultAvatar } from "@/constant";
+import PreviewAvatar from "@/components/Upload/PreviewAvatar";
 
 function Profile({ params }: { params: { id: string } }) {
-  const { user } = useAuth();
+  const { user, status, isLoadingUser } = useAuth();
+  const router = useRouter();
   const information = user?._id === params.id ? user._id : params.id;
   const [toggleAvatar, setToggleAvatar] = useState<boolean>(false);
+  const [previewAvatar, setPreviewAvatar] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const bodyRef = useRef<HTMLDivElement>(null);
   const { data } = useQuery<User>({
     queryKey: ["user", information],
     queryFn: async () => {
       return await getUserById(information as string);
     },
+  });
+
+  useEffect(() => {
+    if (status === 403 || status === 401 || status === 400) {
+      router.push("/");
+    }
+  }, [status, isLoadingUser]);
+
+  useEffect(() => {
+    const handler = (e: any) => {
+      if (bodyRef.current?.contains(e.target)) {
+        setPreviewAvatar(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+
+    return () => document.removeEventListener("mousedown", handler);
   });
 
   useLayoutEffect(() => {
@@ -35,6 +57,8 @@ function Profile({ params }: { params: { id: string } }) {
     <>
       <Header />
       {openModal && <UploadAvatar onOpenModel={() => setOpenModal(false)} />}
+      {previewAvatar && <PreviewAvatar image={user?.avatar!} />}
+
       <div
         className={
           openModal
