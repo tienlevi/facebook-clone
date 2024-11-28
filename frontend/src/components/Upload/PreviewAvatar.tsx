@@ -6,13 +6,16 @@ interface Props {
 
 function PreviewAvatar({ image }: Props) {
   return (
-    <div className="fixed w-3/4 py-2 top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] rounded-[8px] bg-white shadow-[0_12px_28px_0_rgba(0,0,0,0.2)]">
+    <div
+      style={{ zIndex: 100 }}
+      className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]"
+    >
       <Image
         src={image}
         alt=""
-        width={0}
-        height={0}
-        className="w-full h-full"
+        width={300}
+        height={300}
+        className="w-[300px] h-[300px]"
       />
     </div>
   );

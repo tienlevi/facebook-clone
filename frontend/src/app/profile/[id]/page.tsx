@@ -45,13 +45,16 @@ function Profile({ params }: { params: { id: string } }) {
     document.addEventListener("mousedown", handler);
 
     return () => document.removeEventListener("mousedown", handler);
-  });
+  }, [previewAvatar]);
 
   useLayoutEffect(() => {
     openModal
       ? (document.body.style.overflow = "hidden")
       : (document.body.style.overflow = "scroll");
-  }, [openModal]);
+    previewAvatar
+      ? (document.body.style.overflow = "hidden")
+      : (document.body.style.overflow = "scroll");
+  }, [openModal, previewAvatar]);
 
   return (
     <>
@@ -60,8 +63,9 @@ function Profile({ params }: { params: { id: string } }) {
       {previewAvatar && <PreviewAvatar image={user?.avatar!} />}
 
       <div
+        ref={bodyRef}
         className={
-          openModal
+          openModal || previewAvatar
             ? "absolute top-0 right-0 bottom-0 left-0 h-screen bg-[#f2f4f7] z-20"
             : ""
         }
@@ -89,7 +93,10 @@ function Profile({ params }: { params: { id: string } }) {
               toggleAvatar ? "block" : "hidden"
             } absolute bottom-[-70%] p-2 left-5 w-[300px] bg-white rounded-[10px] shadow-[0_12px_24px_0_rgba(0,0,0,0.2)] cursor-pointer z-10`}
           >
-            <div className="flex items-center px-5 py-2 rounded-[10px] hover:bg-[rgb(234,235,236)]">
+            <div
+              onClick={() => setPreviewAvatar(true)}
+              className="flex items-center px-5 py-2 rounded-[10px] hover:bg-[rgb(234,235,236)]"
+            >
               <RxAvatar style={{ fontSize: 30 }} />{" "}
               <p className="ml-2 text-[18px]">Preview Avatar</p>
             </div>
