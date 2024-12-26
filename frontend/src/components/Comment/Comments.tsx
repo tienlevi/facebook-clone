@@ -2,14 +2,13 @@ import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Comment as CommentInterface } from "@/interface";
+import { Comment as CommentInterface, User } from "@/interface";
 import {
   deleteComment,
   editComment,
   getCommentByPostId,
 } from "@/services/comment";
 import { toast } from "react-toastify";
-import useAuth from "@/hooks/useAuth";
 import { formatDate } from "@/utils/format";
 import TextArea from "../ui/TextArea";
 import { IoMdSend } from "react-icons/io";
@@ -18,10 +17,10 @@ import { defaultAvatar } from "@/constant";
 
 interface Props {
   postId: string;
+  user: User;
 }
 
-function Comments({ postId }: Props) {
-  const { user } = useAuth();
+function Comments({ postId, user }: Props) {
   const queryClient = useQueryClient();
   const {
     register,

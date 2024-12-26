@@ -14,7 +14,7 @@ import Dropdown from "./Dropdown";
 import Account from "./Account";
 
 function Header() {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const { t } = useContext(LanguageProvider);
   const [searchValue, setSearchValue] = useState<string>("");
   const [toggleProfile, setToggleProfile] = useState<boolean>(false);
@@ -90,7 +90,7 @@ function Header() {
             />
           </div>
         </div>
-        <Account toggle={toggleProfile} />
+        <Account toggle={toggleProfile} user={user!} setUser={setUser} />
         {debounceValue.length > 0 && (
           <Dropdown loading={isLoading} lists={userLists!} />
         )}

@@ -11,9 +11,9 @@ function useAuth() {
   const [isLoadingUser, setIsLoadingUser] = useState<boolean>(false);
   const axiosJWT = axios.create();
   const refreshToken = useToken();
+  const accessToken = localStorage?.getItem("AccessToken");
 
   useEffect(() => {
-    const accessToken = localStorage?.getItem("AccessToken");
     (async () => {
       try {
         setIsLoadingUser(true);
@@ -32,7 +32,6 @@ function useAuth() {
   }, []);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("AccessToken");
     const requestJWT = axiosJWT.interceptors.request.use(
       async (config) => {
         const decodedToken: any = jwtDecode(accessToken!);
@@ -45,7 +44,7 @@ function useAuth() {
       },
       (error) => {
         return Promise.reject(error);
-      }
+      },
     );
 
     const responseJWT = axiosJWT.interceptors.response.use(
@@ -58,7 +57,7 @@ function useAuth() {
           prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         }
         return Promise.reject(error);
-      }
+      },
     );
 
     return () => {

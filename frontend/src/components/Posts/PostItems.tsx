@@ -154,6 +154,7 @@ function PostItems({ posts }: Props) {
                 <LikePost
                   postId={item}
                   users={item.like.users}
+                  userId={user?._id!}
                   likePost={handleLikePost}
                   unlikePost={handleUnlikePost}
                 />
@@ -163,10 +164,10 @@ function PostItems({ posts }: Props) {
                 </div>
               </div>
             </div>
-            <Comments postId={item._id!} />
-            <SendComment key={item._id} postId={item._id} />
+            <Comments postId={item._id!} user={user!} />
+            <SendComment key={item._id} postId={item._id} user={user!} />
           </div>
-        )
+        ),
       )}
     </FormProvider>
   );

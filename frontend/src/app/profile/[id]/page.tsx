@@ -60,7 +60,9 @@ function Profile({ params }: { params: { id: string } }) {
   return (
     <>
       <Header />
-      {openModal && <UploadAvatar onOpenModel={() => setOpenModal(false)} />}
+      {openModal && (
+        <UploadAvatar onOpenModel={() => setOpenModal(false)} user={user!} />
+      )}
       {previewAvatar && <PreviewAvatar image={user?.avatar!} />}
 
       <div

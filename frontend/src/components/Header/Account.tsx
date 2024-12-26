@@ -1,15 +1,20 @@
 import { useState, useContext } from "react";
-import useAuth from "@/hooks/useAuth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { IoLanguage } from "react-icons/io5";
 import { TbLogout } from "react-icons/tb";
 import Language from "./Language";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { User } from "@/interface";
 
-function Account({ toggle }: { toggle: boolean }) {
+interface Props {
+  toggle: boolean;
+  user: User;
+  setUser: (value: any) => void;
+}
+
+function Account({ toggle, user, setUser }: Props) {
   const router = useRouter();
-  const { user, setUser } = useAuth();
   const [open, setOpen] = useState<boolean>(false);
   const { t, language } = useContext(LanguageProvider);
 

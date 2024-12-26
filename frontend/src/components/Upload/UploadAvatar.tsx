@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import useAuth from "@/hooks/useAuth";
 import Image from "next/image";
 import { IoMdClose } from "react-icons/io";
 import File from "../Posts/File";
@@ -8,14 +7,15 @@ import usePreview from "@/hooks/usePreview";
 import { updateAvatar } from "@/services/user";
 import { UploadCloundinary } from "@/utils/cloudinary";
 import { toast } from "react-toastify";
+import { User } from "@/interface";
 
 interface Props {
   onOpenModel?: () => void;
+  user: User;
 }
 
-function UploadAvatar({ onOpenModel }: Props) {
+function UploadAvatar({ onOpenModel, user }: Props) {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
   const { file, fileType, handleChangeFile } = usePreview();
   const fileRef = useRef<HTMLInputElement>(null);
 

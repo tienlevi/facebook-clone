@@ -29,8 +29,8 @@ function Language({ open, setOpen }: { open: boolean; setOpen: () => void }) {
             className="flex items-center px-2 py-4 my-2 hover:bg-[rgba(0,0,0,0.05)] rounded-[8px] cursor-pointer"
           >
             <p className="text-[17px] font-medium ml-2">
-              {language.name}{" "}
-              <span className="uppercase">({language.iso})</span>
+              <span>{language.name}</span>
+              <span className="uppercase">({language.iso || "EN"})</span>
             </p>
           </div>
         ))}

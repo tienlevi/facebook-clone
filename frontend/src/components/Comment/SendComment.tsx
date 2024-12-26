@@ -1,19 +1,19 @@
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import useAuth from "@/hooks/useAuth";
 import { IoMdSend } from "react-icons/io";
-import { addComment, getCommentByPostId } from "@/services/comment";
+import { addComment } from "@/services/comment";
 import { toast } from "react-toastify";
 import TextArea from "../ui/TextArea";
 import { defaultAvatar } from "@/constant";
+import { User } from "@/interface";
 
 interface Props {
   postId?: string;
+  user: User;
 }
 
-function SendComment({ postId }: Props) {
-  const { user } = useAuth();
+function SendComment({ postId, user }: Props) {
   const {
     register,
     handleSubmit,
