@@ -14,6 +14,7 @@ import { CiImageOn } from "react-icons/ci";
 import UploadAvatar from "@/components/Upload/UploadAvatar";
 import { defaultAvatar } from "@/constant";
 import PreviewAvatar from "@/components/Upload/PreviewAvatar";
+import { formatDate } from "@/utils/format";
 
 function Profile({ params }: { params: { id: string } }) {
   const { user, status, isLoadingUser } = useAuth();
@@ -49,11 +50,11 @@ function Profile({ params }: { params: { id: string } }) {
 
   useLayoutEffect(() => {
     openModal
-      ? (document.body.style.overflow = "hidden")
-      : (document.body.style.overflow = "scroll");
+      ? (document.body.style.overflowY = "hidden")
+      : (document.body.style.overflowY = "scroll");
     previewAvatar
-      ? (document.body.style.overflow = "hidden")
-      : (document.body.style.overflow = "scroll");
+      ? (document.body.style.overflowY = "hidden")
+      : (document.body.style.overflowY = "scroll");
   }, [openModal, previewAvatar]);
 
   return (
@@ -85,7 +86,9 @@ function Profile({ params }: { params: { id: string } }) {
             />
             <div className="ml-4 flex flex-col">
               <div className="text-[32px] font-bold">{data?.name}</div>
-              <div className="text-[22px]">Create at {data?.createdAt}</div>
+              <div className="text-[22px]">
+                Create at {formatDate(data?.createdAt)}
+              </div>
             </div>
           </div>
           <div

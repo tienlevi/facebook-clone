@@ -1,5 +1,5 @@
 "use client";
-import { useLayoutEffect, useState, useContext, useEffect } from "react";
+import { useState, useLayoutEffect, useContext } from "react";
 import Link from "next/link";
 import { FaFacebook } from "react-icons/fa";
 import { IoSearchSharp, IoMenu } from "react-icons/io5";
@@ -15,11 +15,10 @@ import Account from "./Account";
 
 function Header() {
   const { user } = useAuth();
-  const [placeholder, setPlaceholder] = useState("");
+  const { t } = useContext(LanguageProvider);
   const [searchValue, setSearchValue] = useState<string>("");
   const [toggleProfile, setToggleProfile] = useState<boolean>(false);
   const [toggleMenu, setToggleMenu] = useState<boolean>(false);
-  const { t } = useContext(LanguageProvider);
   const debounceValue = useDebounce(searchValue, 300);
   const { data: userLists, isLoading } = useQuery<User[]>({
     queryKey: ["users", debounceValue],
@@ -39,10 +38,6 @@ function Header() {
 
     return () => window.removeEventListener("resize", resize);
   });
-
-  useEffect(() => {
-    setPlaceholder(t("SearchUser")!);
-  }, []);
 
   return (
     <>
@@ -66,7 +61,7 @@ function Header() {
               className="px-3 text-[#050505] bg-[#F0F2F5] h-[40px] rounded-[50px] focus:outline-none"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder={placeholder}
+              placeholder={t("SearchUser")! || "Search User"}
             />
           </div>
         </div>
