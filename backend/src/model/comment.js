@@ -6,19 +6,13 @@ const Comment = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
     },
-    name: {
-      type: String,
-    },
-    avatar: {
-      type: String,
-    },
     postId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Posts",
     },
     content: { type: String, require: true },
   },
-  { timestamps: true, versionKey: false }
+  { timestamps: true, versionKey: false },
 );
 
 const CommentSchema = mongoose.model("Comments", Comment);

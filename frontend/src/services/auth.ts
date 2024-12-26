@@ -12,7 +12,7 @@ export const registerUser = async (data: any) => {
 export const loginUser = async (data: any) => {
   try {
     const response = await baseUrl.post("/login", data);
-    return response.data;
+    return response;
   } catch (error) {
     console.log(error);
   }

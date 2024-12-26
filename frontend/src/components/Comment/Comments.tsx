@@ -14,6 +14,7 @@ import TextArea from "../ui/TextArea";
 import { IoMdSend } from "react-icons/io";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { defaultAvatar } from "@/constant";
+import { getUsers } from "@/services/user";
 
 interface Props {
   postId: string;
@@ -30,11 +31,24 @@ function Comments({ postId, user }: Props) {
   } = useForm();
   const [selectComment, setSelectComment] = useState<null>(null);
   const { t } = useContext(LanguageProvider);
-  const { data } = useQuery<CommentInterface[]>({
+  const { data: comments } = useQuery<CommentInterface[]>({
     queryKey: ["comments", postId],
     queryFn: async () => {
       return await getCommentByPostId(postId);
     },
+  });
+  const { data: users } = useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: async () => {
+      return await getUsers();
+    },
+  });
+
+  const listComments = comments?.map((comment) => {
+    return {
+      ...comment,
+      user: users?.find((u) => u._id === comment.userId),
+    };
   });
 
   const { mutate: handleDelete } = useMutation({
@@ -70,10 +84,10 @@ function Comments({ postId, user }: Props) {
     <>
       <div
         className={`${
-          data?.length! >= 4 && "h-[300px]"
+          listComments?.length! >= 4 && "h-[300px]"
         } bg-white overflow-x-hidden overflow-y-auto`}
       >
-        {data?.map((comment) =>
+        {listComments?.map((comment) =>
           selectComment === comment._id ? (
             <div className="flex items-start">
               <Image
@@ -128,7 +142,11 @@ function Comments({ postId, user }: Props) {
               <div key={comment._id} className="flex my-3">
                 <div className="">
                   <Image
-                    src={user?.avatar! ? user.avatar : defaultAvatar}
+                    src={
+                      comment.user?.avatar!
+                        ? comment.user?.avatar
+                        : defaultAvatar
+                    }
                     alt=""
                     width={40}
                     height={40}
@@ -138,7 +156,7 @@ function Comments({ postId, user }: Props) {
                 <div className="flex flex-col ml-2 w-[90%]">
                   <div className="flex flex-col py-1 px-3 bg-[#f0f2f5] rounded-lg">
                     <p className="text-[18px] font-bold leading-8">
-                      {comment.name}
+                      {comment.user?.name}
                     </p>
                     <p className="text-[15px]">{comment.content}</p>
                   </div>

@@ -11,9 +11,9 @@ function useAuth() {
   const [isLoadingUser, setIsLoadingUser] = useState<boolean>(false);
   const axiosJWT = axios.create();
   const refreshToken = useToken();
-  const accessToken = localStorage?.getItem("AccessToken");
 
   useEffect(() => {
+    const accessToken = localStorage?.getItem("AccessToken");
     (async () => {
       try {
         setIsLoadingUser(true);
@@ -32,6 +32,7 @@ function useAuth() {
   }, []);
 
   useEffect(() => {
+    const accessToken = localStorage?.getItem("AccessToken");
     const requestJWT = axiosJWT.interceptors.request.use(
       async (config) => {
         const decodedToken: any = jwtDecode(accessToken!);

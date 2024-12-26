@@ -26,20 +26,14 @@ export const updateAvatar = async (req, res) => {
   try {
     const postByUserId = await PostSchema.updateMany(
       { userId: req.params.id },
-      { userInfo: { name: name, avatar: avatar } }
+      { userInfo: { name: name, avatar: avatar } },
     );
     const uploadPostAvatar = await UserSchema.findOneAndUpdate(
       { _id: req.params.id },
       { avatar: avatar },
-      { new: true }
+      { new: true },
     );
-    const uploadCommnentAvatar = await CommentSchema.updateMany(
-      { userId: req.params.id },
-      { avatar: avatar }
-    );
-    return res
-      .status(200)
-      .json({ uploadPostAvatar, uploadCommnentAvatar, postByUserId });
+    return res.status(200).json({ uploadPostAvatar, postByUserId });
   } catch (error) {
     console.log(error);
   }

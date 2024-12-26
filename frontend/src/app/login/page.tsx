@@ -1,14 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import useAuth from "@/hooks/useAuth";
-import { baseServer } from "@/constant";
 import Loading from "@/components/Loading/Loading";
-import { loginUser } from "@/services/auth";
+import baseUrl from "@/config/axios";
 
 interface Inputs {
   email: string;
@@ -22,7 +20,6 @@ function Login() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setError,
   } = useForm<Inputs>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -40,18 +37,16 @@ function Login() {
 
   const onSubmit = async (data: any) => {
     try {
-      const response = await loginUser(data);
-      router.push("/", { scroll: false });
-      toast.success("Login success");
-      localStorage.setItem("AccessToken", response?.accessToken);
-      localStorage.setItem("RefreshToken", response?.refreshToken);
-      return response;
-    } catch (error: any) {
-      if (error?.response.status === 401) {
-        setError("email", { message: "Email already exist" });
+      const response = await baseUrl.post("/login", data);
+      if (response?.status === 200) {
+        router.push("/", { scroll: false });
+        toast.success("Login success");
+        localStorage.setItem("AccessToken", response?.data?.accessToken);
+        localStorage.setItem("RefreshToken", response?.data?.refreshToken);
       }
-      if (error?.response.status === 402) {
-        setError("password", { message: "Password incorrect" });
+    } catch (error: any) {
+      if (error?.status === 402) {
+        return toast.error("Password incorrect");
       }
     }
   };
